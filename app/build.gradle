@@ -42,7 +42,7 @@ android {
         }
         paid {
             dimension 'version'
-            applicationId '.paid'
+            applicationIdSuffix '.paid'
         }
     }
 }
