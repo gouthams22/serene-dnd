@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Crescent DND</string>
+    <string name="get_started">Get Started</string>
+    <string name="app_logo">App logo</string>
 </resources>
