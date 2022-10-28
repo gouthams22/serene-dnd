@@ -14,4 +14,5 @@
     <color name="cyan_300">#4dd0e1</color>
     <color name="cyan_light">#88ffff</color>
     <color name="cyan_dark">#009faf</color>
+    <color name="app_icon_background">#331606</color>
 </resources>
