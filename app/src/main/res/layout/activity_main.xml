@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/app_icon_background"
+    android:background="@color/get_started_background"
     tools:context=".MainActivity">
 
     <ImageView
@@ -20,7 +20,8 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_get_started"
-        android:backgroundTint="@color/deep_orange_700"
+        android:backgroundTint="@color/get_started_button"
+        android:textColor="@color/get_started_background"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -15,4 +15,6 @@
     <color name="cyan_light">#88ffff</color>
     <color name="cyan_dark">#009faf</color>
     <color name="app_icon_background">#331606</color>
+    <color name="get_started_background">#e64a19</color>
+    <color name="get_started_button">#331606</color>
 </resources>
