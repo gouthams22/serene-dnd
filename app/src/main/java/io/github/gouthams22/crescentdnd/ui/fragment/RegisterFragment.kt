@@ -4,7 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
 import io.github.gouthams22.crescentdnd.R
 import io.github.gouthams22.crescentdnd.ui.activity.LoginRegisterActivity
@@ -38,12 +41,83 @@ class RegisterFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_register, container, false)
+        val registerButton: MaterialButton = view.findViewById(R.id.register_button)
+        val regEmailField: TextInputEditText = view.findViewById(R.id.reg_email_field)
+        val regPasswordField: TextInputEditText = view.findViewById(R.id.reg_password_field)
+        val regConfirmPasswordField: TextInputEditText =
+            view.findViewById(R.id.reg_confirm_password_field)
+
+        //Checking if "Confirm password" and "password" are equal
+        regConfirmPasswordField.doOnTextChanged { text, start, before, count ->
+            regConfirmPasswordField.error =
+                if (text.toString() == regPasswordField.text.toString()) null else "Passwords doesn't match"
+        }
+
+        //On clicking register button
+        registerButton.setOnClickListener {
+            it.isEnabled = false
+            if (validateFields(regEmailField, regPasswordField, regConfirmPasswordField)) {
+                registerAccount()
+            }
+            it.isEnabled = true
+        }
 
         //Select 'Login' tab if user has account
         view.findViewById<MaterialTextView>(R.id.have_account).setOnClickListener {
+            it.isEnabled = false
             (view.context as LoginRegisterActivity).haveAccount()
+            it.isEnabled = true
         }
         return view
+    }
+
+    private fun registerAccount() {
+        TODO("Implement to add on Firebase")
+    }
+
+    /**
+     * [validateFields] is used to check the validation of email id, password and confirm password.
+     * @param emailField Email ID
+     * @param passwordField Password Field
+     * @param confirmPasswordField Confirm Password Field
+     * @return Boolean value true if validation check is passed otherwise false
+     */
+    private fun validateFields(
+        emailField: TextInputEditText,
+        passwordField: TextInputEditText,
+        confirmPasswordField: TextInputEditText
+    ): Boolean {
+        val email: String = emailField.text?.trim().toString()
+        val password: String = passwordField.text?.trim().toString()
+        val confirmPassword: String = confirmPasswordField.text?.trim().toString()
+
+        //Validation for email
+        if (email.isEmpty()) {
+            emailField.error = "Empty field"
+            return false
+        } else if (!isEmailValid(email)) {
+            emailField.error = "Incorrect email format"
+            return false
+        }
+
+        //Validation for password
+        if (password.isEmpty()) {
+            passwordField.error = "Empty field"
+            return false
+        } else if (password.length < 6 || password.length > 20) {
+            passwordField.error = "Password should be within 6-20 characters in length"
+            return false
+        } else if (!password.matches(Regex("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}\$"))) {
+            passwordField.error =
+                "Password should be alphanumeric(including at least a special character"
+            return false
+        } else if (confirmPassword != password)
+            return false
+        return true
+    }
+
+    private fun isEmailValid(email: String): Boolean {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
     companion object {

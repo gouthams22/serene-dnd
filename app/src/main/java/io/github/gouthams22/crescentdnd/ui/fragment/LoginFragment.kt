@@ -39,53 +39,59 @@ class LoginFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_login, container, false)
+
         val button: MaterialButton = view.findViewById(R.id.login_button)
         val loginEmailField: TextInputEditText = view.findViewById(R.id.login_email_field)
-        val loginPasswordField:TextInputEditText = view.findViewById(R.id.login_password_field)
+        val loginPasswordField: TextInputEditText = view.findViewById(R.id.login_password_field)
+
         //set on click listener for Login button
         button.setOnClickListener {
-            button.isEnabled=false
-            loginEmailField.isEnabled=false
-            loginPasswordField.isEnabled=false
-            val isValid = validateFields(loginEmailField,loginPasswordField)
-            Toast.makeText(view.context,isValid.toString(),Toast.LENGTH_SHORT).show()
-            button.isEnabled=true
-            loginEmailField.isEnabled=true
-            loginPasswordField.isEnabled=true
+            button.isEnabled = false
+            loginEmailField.isEnabled = false
+            loginPasswordField.isEnabled = false
+            val isValid = validateFields(loginEmailField, loginPasswordField)
+            Toast.makeText(view.context, isValid.toString(), Toast.LENGTH_SHORT).show()
+            button.isEnabled = true
+            loginEmailField.isEnabled = true
+            loginPasswordField.isEnabled = true
         }
         return view
     }
-    private  fun validateFields(
+
+    private fun validateFields(
         emailField: TextInputEditText,
         passwordField: TextInputEditText
     ): Boolean {
         val email: String = emailField.text?.trim().toString()
         val password: String = passwordField.text?.trim().toString()
+
+        //Validation for email
         if (email.isEmpty()) {
             emailField.error = "Empty field"
             return false
-        }
-        else if (!isEmailValid(email)){
+        } else if (!isEmailValid(email)) {
             emailField.error = "Incorrect email format"
             return false
         }
-        if (password.isEmpty()){
+        //Validation for password
+        if (password.isEmpty()) {
             passwordField.error = "Empty field"
             return false
-        }
-        else if (password.length<6 || password.length>20){
-            passwordField.error= "Password should be within 6-20 characters in length"
+        } else if (password.length < 6 || password.length > 20) {
+            passwordField.error = "Password should be within 6-20 characters in length"
+            return false
+        } else if (!password.matches(Regex("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}\$"))) {
+            passwordField.error =
+                "Password should be alphanumeric(including at least a special character"
             return false
         }
-        else if (!password.matches(Regex("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}\$"))){
-            passwordField.error= "Password should be alphanumeric(including at least a special character"
-            return false}
         return true
     }
 
     private fun isEmailValid(email: String): Boolean {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
+
     companion object {
         //  /**
 //         * Use this factory method to create a new instance of

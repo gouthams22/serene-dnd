@@ -6,24 +6,22 @@
     android:layout_height="match_parent"
     tools:context=".ui.fragment.RegisterFragment">
 
-    <!-- TODO: Choose outline or filled style for TextInputLayout -->
-
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/reg_text_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/poor_story"
         android:padding="20dp"
         android:text="@string/registration"
         android:textAlignment="center"
-        android:textStyle="bold"
-        android:fontFamily="@font/poor_story"
         android:textSize="40sp"
+        android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/reg_email_input_layout"
-        android:layout_width="match_parent"
         style="?attr/textInputOutlinedStyle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_registration"
         app:layout_constraintTop_toBottomOf="@id/reg_text_id">
@@ -39,13 +37,13 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/reg_password_input_layout"
-        android:layout_width="match_parent"
         style="?attr/textInputOutlinedStyle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_registration"
         app:layout_constraintTop_toBottomOf="@id/reg_email_input_layout">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/reg_password_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -56,13 +54,13 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/reg_confirm_password_input_layout"
+        style="?attr/textInputOutlinedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="?attr/textInputOutlinedStyle"
         android:layout_margin="@dimen/margin_registration"
         app:layout_constraintTop_toBottomOf="@id/reg_password_input_layout">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/reg_confirm_password_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

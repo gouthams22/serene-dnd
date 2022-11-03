@@ -13,7 +13,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         findViewById<MaterialButton>(R.id.btn_get_started).setOnClickListener {
+            it.isEnabled = false
             startActivity(Intent(this, LoginRegisterActivity::class.java))
+            it.isEnabled = true
         }
     }
 }

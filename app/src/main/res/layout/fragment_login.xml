@@ -6,17 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".ui.fragment.LoginFragment">
 
-    <!-- TODO: Choose outline or filled style for TextInputLayout -->
-
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/login_text_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/poor_story"
         android:padding="20dp"
         android:text="@string/login"
         android:textAlignment="center"
         android:textSize="40sp"
-        android:fontFamily="@font/poor_story"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent" />
 
