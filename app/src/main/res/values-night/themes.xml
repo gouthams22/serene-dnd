@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.CrescentDND" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/cyan_300</item>
+        <item name="colorPrimary">@color/cyan_dark</item>
         <item name="colorPrimaryVariant">@color/deep_orange_dark</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->

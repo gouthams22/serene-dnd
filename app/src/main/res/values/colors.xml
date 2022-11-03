@@ -17,4 +17,6 @@
     <color name="app_icon_background">#331606</color>
     <color name="get_started_background">#e64a19</color>
     <color name="get_started_button">#331606</color>
+    <color name="login_register_tab_color_indicator">@color/cyan_300</color>
+    <color name="hyperlink">#2196F3</color>
 </resources>

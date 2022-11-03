@@ -2,4 +2,5 @@
 <resources>
     <color name="get_started_background">#331606</color>
     <color name="get_started_button">#e64a19</color>
+    <color name="login_register_tab_color_indicator">@color/cyan_dark</color>
 </resources>

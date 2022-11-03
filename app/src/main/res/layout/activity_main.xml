@@ -5,34 +5,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/get_started_background"
-    tools:context=".MainActivity">
+    tools:context=".ui.activity.MainActivity">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/app_icon"
+        android:contentDescription="@string/app_logo"
         android:scaleType="fitCenter"
+        android:src="@drawable/app_icon"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="@string/app_logo" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_get_started"
-        android:backgroundTint="@color/get_started_button"
-        android:textColor="@color/get_started_background"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/get_started_button"
+        android:padding="16dp"
+        android:text="@string/get_started"
+        android:textColor="@color/get_started_background"
+        android:textSize="@dimen/text_size_16"
+        android:textStyle="bold"
+        app:cornerRadius="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/get_started"
-        android:textSize="@dimen/text_size_16"
-        android:padding="16dp"
-        android:textStyle="bold"
-        app:cornerRadius="16dp"
         app:layout_constraintVertical_bias="0.9" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

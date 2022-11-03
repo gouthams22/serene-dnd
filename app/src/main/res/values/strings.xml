@@ -2,4 +2,12 @@
     <string name="app_name">Crescent DND</string>
     <string name="get_started">Get Started</string>
     <string name="app_logo">App logo</string>
+    <string name="registration">Registration</string>
+    <string name="email_id">Email ID</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="have_account">Have an account?</string>
+    <string name="forgot_password">Forgot Password</string>
 </resources>
