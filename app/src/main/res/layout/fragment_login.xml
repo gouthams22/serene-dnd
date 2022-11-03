@@ -15,7 +15,9 @@
         android:padding="20dp"
         android:text="@string/login"
         android:textAlignment="center"
-        android:textSize="28sp"
+        android:textSize="40sp"
+        android:fontFamily="@font/poor_story"
+        android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout

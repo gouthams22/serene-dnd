@@ -28,7 +28,8 @@
                 app:layout_constraintBottom_toTopOf="@id/login_register_tab"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/app_logo" />
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/login_register_tab"
@@ -38,7 +39,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:tabIndicatorColor="@color/login_register_tab_color_indicator"
                 app:tabSelectedTextColor="@color/black"
-                app:tabTextColor="@color/deep_orange_500" />
+                app:tabTextColor="#795548" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.viewpager2.widget.ViewPager2

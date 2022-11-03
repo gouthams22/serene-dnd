@@ -15,12 +15,15 @@
         android:padding="20dp"
         android:text="@string/registration"
         android:textAlignment="center"
-        android:textSize="28sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/poor_story"
+        android:textSize="40sp"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/reg_email_input_layout"
         android:layout_width="match_parent"
+        style="?attr/textInputOutlinedStyle"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_registration"
         app:layout_constraintTop_toBottomOf="@id/reg_text_id">
@@ -37,6 +40,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/reg_password_input_layout"
         android:layout_width="match_parent"
+        style="?attr/textInputOutlinedStyle"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_registration"
         app:layout_constraintTop_toBottomOf="@id/reg_email_input_layout">
@@ -54,6 +58,7 @@
         android:id="@+id/reg_confirm_password_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="?attr/textInputOutlinedStyle"
         android:layout_margin="@dimen/margin_registration"
         app:layout_constraintTop_toBottomOf="@id/reg_password_input_layout">
 
