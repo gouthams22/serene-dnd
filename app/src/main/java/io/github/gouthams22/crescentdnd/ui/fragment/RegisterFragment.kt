@@ -109,7 +109,7 @@ class RegisterFragment : Fragment() {
             return false
         } else if (!password.matches(Regex("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}\$"))) {
             passwordField.error =
-                "Password should be alphanumeric(including at least a special character"
+                "Password should be alphanumeric(including at least a capital letter and a special character)"
             return false
         } else if (confirmPassword != password)
             return false

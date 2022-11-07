@@ -1,14 +1,15 @@
 package io.github.gouthams22.crescentdnd.ui.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import io.github.gouthams22.crescentdnd.R
+import io.github.gouthams22.crescentdnd.ui.activity.HomeActivity
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -50,12 +51,22 @@ class LoginFragment : Fragment() {
             loginEmailField.isEnabled = false
             loginPasswordField.isEnabled = false
             val isValid = validateFields(loginEmailField, loginPasswordField)
-            Toast.makeText(view.context, isValid.toString(), Toast.LENGTH_SHORT).show()
+            if (isValid) authenticateFirebase(view)
             button.isEnabled = true
             loginEmailField.isEnabled = true
             loginPasswordField.isEnabled = true
         }
         return view
+    }
+
+    private fun startHomeActivity(view: View) {
+        //Add parameters or other feature if necessary
+        startActivity(Intent(view.context,HomeActivity::class.java))
+    }
+
+    private fun authenticateFirebase(view: View) {
+        startHomeActivity(view)
+        //TODO("Implement Firebase Authentication")
     }
 
     private fun validateFields(
@@ -82,7 +93,7 @@ class LoginFragment : Fragment() {
             return false
         } else if (!password.matches(Regex("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}\$"))) {
             passwordField.error =
-                "Password should be alphanumeric(including at least a special character"
+                "Password should be alphanumeric(including at least a capital letter and a special character)"
             return false
         }
         return true
