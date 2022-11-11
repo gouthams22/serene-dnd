@@ -1,0 +1,84 @@
+{
+  "project_info": {
+    "project_number": "1234567890",
+    "project_id": "project-id",
+    "storage_bucket": "your-bucket.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "mobileSdkAppId",
+        "android_client_info": {
+          "package_name": "io.github.gouthams22.crescentdnd.free"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "clientId",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.github.gouthams22.crescentdnd.free",
+            "certificate_hash": "yourCertificateHash"
+          }
+        },
+        {
+          "client_id": "clientId",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "yourApiKey"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "clientId",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "MobileSdkAppId",
+        "android_client_info": {
+          "package_name": "io.github.gouthams22.crescentdnd.paid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "clientId",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.github.gouthams22.crescentdnd.paid",
+            "certificate_hash": "yourCertificateHash"
+          }
+        },
+        {
+          "client_id": "clientId",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "yourCurrentKey"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "clientId",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
