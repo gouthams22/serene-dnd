@@ -72,4 +72,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/login_button" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/login_google_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_registration"
+        android:backgroundTint="@color/google_background"
+        android:fontFamily="monospace"
+        android:text="@string/login_with_google"
+        android:textColor="@color/google_text"
+        android:textSize="11sp"
+        app:icon="@drawable/google_icon"
+        app:iconTint="@null"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/login_button" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

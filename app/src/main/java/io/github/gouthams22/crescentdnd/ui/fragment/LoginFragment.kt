@@ -1,15 +1,27 @@
 package io.github.gouthams22.crescentdnd.ui.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.tasks.Task
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import io.github.gouthams22.crescentdnd.R
 import io.github.gouthams22.crescentdnd.ui.activity.HomeActivity
+import io.github.gouthams22.crescentdnd.ui.activity.LoginRegisterActivity
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -25,6 +37,10 @@ class LoginFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private val logTag: String = "LoginFragment"
+    private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var rootView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,33 +56,86 @@ class LoginFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_login, container, false)
+        rootView = view
 
-        val button: MaterialButton = view.findViewById(R.id.login_button)
         val loginEmailField: TextInputEditText = view.findViewById(R.id.login_email_field)
         val loginPasswordField: TextInputEditText = view.findViewById(R.id.login_password_field)
 
+        firebaseAuth = FirebaseAuth.getInstance()
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(view.context as LoginRegisterActivity, gso)
+
+        val loginGoogleButton: MaterialButton = view.findViewById(R.id.login_google_button)
+        loginGoogleButton.setOnClickListener {
+            signIntoGoogle()
+        }
+
+        val loginButton: MaterialButton = view.findViewById(R.id.login_button)
         //set on click listener for Login button
-        button.setOnClickListener {
-            button.isEnabled = false
+        loginButton.setOnClickListener {
+            loginButton.isEnabled = false
             loginEmailField.isEnabled = false
             loginPasswordField.isEnabled = false
             val isValid = validateFields(loginEmailField, loginPasswordField)
+            Log.d(
+                logTag,
+                if (isValid) "Login Form fields are in valid state" else "Login Form is invalid"
+            )
             if (isValid) authenticateFirebase(view)
-            button.isEnabled = true
+            loginButton.isEnabled = true
             loginEmailField.isEnabled = true
             loginPasswordField.isEnabled = true
         }
         return view
     }
 
-    private fun startHomeActivity(view: View) {
+    private fun signIntoGoogle() {
+        val signInIntent = googleSignInClient.signInIntent
+        launcher.launch(signInIntent)
+    }
+
+    private val launcher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                handleResults(task)
+            }
+        }
+
+    private fun handleResults(task: Task<GoogleSignInAccount>) {
+        if (task.isSuccessful) {
+            val account: GoogleSignInAccount? = task.result
+            if (account != null)
+                updateFirebaseCredential(account)
+        } else {
+            Toast.makeText(rootView.context, task.exception.toString(), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun updateFirebaseCredential(account: GoogleSignInAccount) {
+        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+        Log.d(logTag, "update Firebase credential")
+        firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
+            Log.d(logTag, "Successful authentication")
+            startHomeActivity()
+        }
+            .addOnCanceledListener {
+                Toast.makeText(rootView.context, "Canceled", Toast.LENGTH_SHORT).show()
+                Log.d(logTag, "Canceled Firebase Authentication")
+            }
+    }
+
+    private fun startHomeActivity() {
         //Add parameters or other feature if necessary
-        startActivity(Intent(view.context,HomeActivity::class.java))
+        startActivity(Intent(rootView.context, HomeActivity::class.java))
     }
 
     private fun authenticateFirebase(view: View) {
-        startHomeActivity(view)
-        //TODO("Implement Firebase Authentication")
+        startHomeActivity()
+        //TODO("Implement Firebase Email/Password Authentication")
     }
 
     private fun validateFields(

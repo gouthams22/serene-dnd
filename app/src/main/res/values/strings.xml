@@ -10,4 +10,6 @@
     <string name="register">Register</string>
     <string name="have_account">Have an account?</string>
     <string name="forgot_password">Forgot Password</string>
+    <string name="login_with_google">Login with Google</string>
+    <string name="log_out">Log Out</string>
 </resources>
