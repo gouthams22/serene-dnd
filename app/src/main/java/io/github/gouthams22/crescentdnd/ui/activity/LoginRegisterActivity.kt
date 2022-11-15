@@ -13,6 +13,8 @@ class LoginRegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login_register)
         window.statusBarColor = this.resources.getColor(R.color.deep_orange_700, theme)
+
+        //Tab Layout and its ViewPager
         val tabLayout = findViewById<TabLayout>(R.id.login_register_tab)
         val viewPager = findViewById<ViewPager2>(R.id.login_register_viewpager)
         viewPager.adapter = LoginRegisterPagerAdapter(supportFragmentManager, lifecycle)
@@ -25,6 +27,9 @@ class LoginRegisterActivity : AppCompatActivity() {
         }.attach()
     }
 
+    /**
+     * [haveAccount] is used to change tab from register to login if "Hava an account?" is clicked
+     */
     fun haveAccount() {
         val tabLayout = findViewById<TabLayout>(R.id.login_register_tab)
         tabLayout.selectTab(tabLayout.getTabAt(0))

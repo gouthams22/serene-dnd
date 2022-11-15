@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -23,20 +24,13 @@ import io.github.gouthams22.crescentdnd.R
 import io.github.gouthams22.crescentdnd.ui.activity.HomeActivity
 import io.github.gouthams22.crescentdnd.ui.activity.LoginRegisterActivity
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 /**
  * A simple [Fragment] subclass.
  * Use the [LoginFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
 class LoginFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
     private val logTag: String = "LoginFragment"
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
@@ -44,10 +38,7 @@ class LoginFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+        // If you are carrying any parameter
     }
 
     override fun onCreateView(
@@ -61,6 +52,7 @@ class LoginFragment : Fragment() {
         val loginEmailField: TextInputEditText = view.findViewById(R.id.login_email_field)
         val loginPasswordField: TextInputEditText = view.findViewById(R.id.login_password_field)
 
+        // Firebase Authentication Instance
         firebaseAuth = FirebaseAuth.getInstance()
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
@@ -68,11 +60,13 @@ class LoginFragment : Fragment() {
             .build()
         googleSignInClient = GoogleSignIn.getClient(view.context as LoginRegisterActivity, gso)
 
+        //Google login button
         val loginGoogleButton: MaterialButton = view.findViewById(R.id.login_google_button)
         loginGoogleButton.setOnClickListener {
             signIntoGoogle()
         }
 
+        // Email & password login button
         val loginButton: MaterialButton = view.findViewById(R.id.login_button)
         //set on click listener for Login button
         loginButton.setOnClickListener {
@@ -101,6 +95,7 @@ class LoginFragment : Fragment() {
         launcher.launch(signInIntent)
     }
 
+    // Activity Result for Google Sign in
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -134,11 +129,13 @@ class LoginFragment : Fragment() {
 
     private fun startHomeActivity() {
         //Add parameters or other feature if necessary
-        val loginRegisterActivity =rootView.context as LoginRegisterActivity
-        Log.d(logTag, "startHomeActivity: "+loginRegisterActivity.parent.toString())
-        loginRegisterActivity.parent?.finish()
+        val loginRegisterActivity = rootView.context as LoginRegisterActivity
+        Log.d(logTag, "startHomeActivity: " + loginRegisterActivity.parent.toString())
         val intent = Intent(rootView.context, HomeActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        (rootView.context as LoginRegisterActivity).setResult(
+            AppCompatActivity.RESULT_OK,
+            (rootView.context as LoginRegisterActivity).intent
+        )
         startActivity(intent)
         loginRegisterActivity.finish()
     }
@@ -150,6 +147,8 @@ class LoginFragment : Fragment() {
     ) {
         val email: String = emailField.text?.trim().toString()
         val password: String = passwordField.text?.trim().toString()
+
+        // Signing in with Email and Password
         firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Log.d(logTag, "Login Success, User:" + firebaseAuth.currentUser)
@@ -157,7 +156,22 @@ class LoginFragment : Fragment() {
                     startHomeActivity()
                 } else {
                     Log.d(logTag, "Login Success, email not verified")
-                    Toast.makeText(view.context, "Email is not verified", Toast.LENGTH_SHORT).show()
+                    task.result.user?.sendEmailVerification()
+                        ?.addOnCompleteListener { verificationTask ->
+                            if (verificationTask.isSuccessful) {
+                                Toast.makeText(
+                                    view.context,
+                                    "Email couldn't be verified, please verify your email sent again to your email address",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                Toast.makeText(
+                                    view.context,
+                                    "Email couldn't be verified, please contact developer",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
                     if (firebaseAuth.currentUser != null) {
                         firebaseAuth.signOut()
                     }
@@ -168,7 +182,6 @@ class LoginFragment : Fragment() {
                 passwordField.text = null
             }
         }
-//        startHomeActivity()
     }
 
     private fun validateFields(
@@ -201,28 +214,18 @@ class LoginFragment : Fragment() {
         return true
     }
 
+    /**
+     * [isEmailValid] is used to validate Email format
+     * @param email Email address to be validated
+     * @return Boolean value of validation of Email format
+     */
     private fun isEmailValid(email: String): Boolean {
+        // Using Regular Expressions
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
     companion object {
-        //  /**
-//         * Use this factory method to create a new instance of
-//         * this fragment using the provided parameters.
-//         *
-//         * @param param1 Parameter 1.
-//         * @param param2 Parameter 2.
-//         * @return A new instance of fragment LoginFragment.
-//         */
-//        // TODO: Rename and change types and number of parameters
-//        @JvmStatic
-//        fun newInstance(param1: String, param2: String) =
-//            LoginFragment().apply {
-//                arguments = Bundle().apply {
-//                    putString(ARG_PARAM1, param1)
-//                    putString(ARG_PARAM2, param2)
-//                }
-//            }
+
         @JvmStatic
         fun newInstance() = LoginFragment()
     }
