@@ -18,9 +18,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import io.github.gouthams22.crescentdnd.R
+import io.github.gouthams22.crescentdnd.ui.activity.ForgotPasswordActivity
 import io.github.gouthams22.crescentdnd.ui.activity.HomeActivity
 import io.github.gouthams22.crescentdnd.ui.activity.LoginRegisterActivity
 
@@ -51,6 +53,12 @@ class LoginFragment : Fragment() {
 
         val loginEmailField: TextInputEditText = view.findViewById(R.id.login_email_field)
         val loginPasswordField: TextInputEditText = view.findViewById(R.id.login_password_field)
+        val forgotPasswordTextView: MaterialTextView = view.findViewById(R.id.forgot_password)
+
+        //redirecting to ForgotPasswordActivity
+        forgotPasswordTextView.setOnClickListener {
+            startActivity(Intent(view.context,ForgotPasswordActivity::class.java))
+        }
 
         // Firebase Authentication Instance
         firebaseAuth = FirebaseAuth.getInstance()
