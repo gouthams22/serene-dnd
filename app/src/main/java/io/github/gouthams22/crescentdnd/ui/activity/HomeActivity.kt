@@ -1,5 +1,6 @@
 package io.github.gouthams22.crescentdnd.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +21,7 @@ class HomeActivity : AppCompatActivity() {
         findViewById<MaterialButton>(R.id.logout_button).setOnClickListener {
             firebaseAuth.signOut()
             Log.d(logTag, if (firebaseAuth.currentUser != null) "Still signed in" else "Nope")
+            startActivity(Intent(this,LoginRegisterActivity::class.java))
             finish()
         }
     }

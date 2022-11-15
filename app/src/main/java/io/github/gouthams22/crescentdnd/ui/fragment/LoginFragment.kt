@@ -84,7 +84,11 @@ class LoginFragment : Fragment() {
                 logTag,
                 if (isValid) "Login Form fields are in valid state" else "Login Form is invalid"
             )
-            if (isValid) authenticateFirebase(view)
+            if (isValid) authenticateFirebase(
+                view,
+                loginEmailField,
+                loginPasswordField
+            )
             loginButton.isEnabled = true
             loginEmailField.isEnabled = true
             loginPasswordField.isEnabled = true
@@ -130,12 +134,41 @@ class LoginFragment : Fragment() {
 
     private fun startHomeActivity() {
         //Add parameters or other feature if necessary
-        startActivity(Intent(rootView.context, HomeActivity::class.java))
+        val loginRegisterActivity =rootView.context as LoginRegisterActivity
+        Log.d(logTag, "startHomeActivity: "+loginRegisterActivity.parent.toString())
+        loginRegisterActivity.parent?.finish()
+        val intent = Intent(rootView.context, HomeActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
+        loginRegisterActivity.finish()
     }
 
-    private fun authenticateFirebase(view: View) {
-        startHomeActivity()
-        //TODO("Implement Firebase Email/Password Authentication")
+    private fun authenticateFirebase(
+        view: View,
+        emailField: TextInputEditText,
+        passwordField: TextInputEditText
+    ) {
+        val email: String = emailField.text?.trim().toString()
+        val password: String = passwordField.text?.trim().toString()
+        firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Log.d(logTag, "Login Success, User:" + firebaseAuth.currentUser)
+                if (firebaseAuth.currentUser?.isEmailVerified == true) {
+                    startHomeActivity()
+                } else {
+                    Log.d(logTag, "Login Success, email not verified")
+                    Toast.makeText(view.context, "Email is not verified", Toast.LENGTH_SHORT).show()
+                    if (firebaseAuth.currentUser != null) {
+                        firebaseAuth.signOut()
+                    }
+                }
+            } else {
+                Log.d(logTag, "Login Unsuccessful")
+                Toast.makeText(view.context, "Login Unsuccessful", Toast.LENGTH_SHORT).show()
+                passwordField.text = null
+            }
+        }
+//        startHomeActivity()
     }
 
     private fun validateFields(
