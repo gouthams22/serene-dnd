@@ -1,21 +1,19 @@
 package io.github.gouthams22.crescentdnd.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
+import com.google.firebase.auth.FirebaseAuth
 import io.github.gouthams22.crescentdnd.R
 import io.github.gouthams22.crescentdnd.ui.activity.LoginRegisterActivity
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -23,16 +21,15 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class RegisterFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    // Tag
+    private val logTag = "RegisterFragment"
+
+    // Firebase Authentication
+    private lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
@@ -47,6 +44,9 @@ class RegisterFragment : Fragment() {
         val regConfirmPasswordField: TextInputEditText =
             view.findViewById(R.id.reg_confirm_password_field)
 
+        // Initialize Firebase Authentication
+        firebaseAuth = FirebaseAuth.getInstance()
+
         //Checking if "Confirm password" and "password" are equal
         regConfirmPasswordField.doOnTextChanged { text, start, before, count ->
             regConfirmPasswordField.error =
@@ -57,8 +57,14 @@ class RegisterFragment : Fragment() {
         registerButton.setOnClickListener {
             it.isEnabled = false
             if (validateFields(regEmailField, regPasswordField, regConfirmPasswordField)) {
-                registerAccount()
-            }
+                Log.d(logTag, "Username and Password field is in valid format")
+                registerAccount(
+                    view,
+                    regEmailField.text?.trim().toString(),
+                    regPasswordField.text?.trim().toString()
+                )
+            } else
+                Log.d(logTag, "Username and Password field is in invalid format")
             it.isEnabled = true
         }
 
@@ -71,8 +77,37 @@ class RegisterFragment : Fragment() {
         return view
     }
 
-    private fun registerAccount() {
-        TODO("Implement to add on Firebase")
+    private fun registerAccount(view: View, email: String, password: String) {
+        firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Log.d(logTag, "Task successful" + task.result.user?.email)
+                task.result.user?.sendEmailVerification()
+                    ?.addOnCompleteListener { verificationTask ->
+                        if (verificationTask.isSuccessful) {
+                            Toast.makeText(
+                                view.context,
+                                "Registered successfully. Verification is sent to the registered email",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            Toast.makeText(
+                                view.context,
+                                "Registered successfully",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                if (firebaseAuth.currentUser != null) {
+                    firebaseAuth.signOut()
+                }
+            } else if (task.isCanceled) {
+                Log.d(logTag, "Create user task is cancelled")
+                Toast.makeText(view.context, "Process is cancelled", Toast.LENGTH_SHORT).show()
+            } else {
+                Log.d(logTag, "Create user task failed")
+                Toast.makeText(view.context, "Registration failed!", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     /**
@@ -121,23 +156,6 @@ class RegisterFragment : Fragment() {
     }
 
     companion object {
-        //  /**
-//         * Use this factory method to create a new instance of
-//         * this fragment using the provided parameters.
-//         *
-//         * @param param1 Parameter 1.
-//         * @param param2 Parameter 2.
-//         * @return A new instance of fragment RegisterFragment.
-//         */
-//        // TODO: Rename and change types and number of parameters
-//        @JvmStatic
-//        fun newInstance(param1: String, param2: String) =
-//            RegisterFragment().apply {
-//                arguments = Bundle().apply {
-//                    putString(ARG_PARAM1, param1)
-//                    putString(ARG_PARAM2, param2)
-//                }
-//            }
         @JvmStatic
         fun newInstance() = RegisterFragment()
     }
