@@ -52,6 +52,11 @@ class ForgotPasswordActivity : AppCompatActivity() {
                         if (task.isSuccessful)
                             finish()
                     }
+            } else {
+                Toast.makeText(applicationContext, "Invalid email format", Toast.LENGTH_SHORT)
+                    .show()
+                forgotPasswordButton.isEnabled = true
+                forgotEmailEditText.isEnabled = true
             }
         }
     }

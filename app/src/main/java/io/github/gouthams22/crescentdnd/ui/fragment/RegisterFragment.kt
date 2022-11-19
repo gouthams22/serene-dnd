@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.FirebaseAuth
@@ -38,11 +39,16 @@ class RegisterFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_register, container, false)
-        val registerButton: MaterialButton = view.findViewById(R.id.register_button)
+
+        val registerProgressIndicator: LinearProgressIndicator =
+            view.findViewById(R.id.register_progress)
+
         val regEmailField: TextInputEditText = view.findViewById(R.id.reg_email_field)
         val regPasswordField: TextInputEditText = view.findViewById(R.id.reg_password_field)
         val regConfirmPasswordField: TextInputEditText =
             view.findViewById(R.id.reg_confirm_password_field)
+
+        val registerButton: MaterialButton = view.findViewById(R.id.register_button)
 
         // Initialize Firebase Authentication
         firebaseAuth = FirebaseAuth.getInstance()
@@ -55,7 +61,8 @@ class RegisterFragment : Fragment() {
 
         //On clicking register button
         registerButton.setOnClickListener {
-            it.isEnabled = false
+            disableInput(view)
+            registerProgressIndicator.visibility = View.VISIBLE
             if (validateFields(regEmailField, regPasswordField, regConfirmPasswordField)) {
                 Log.d(logTag, "Username and Password field is in valid format")
                 registerAccount(
@@ -63,9 +70,12 @@ class RegisterFragment : Fragment() {
                     regEmailField.text?.trim().toString(),
                     regPasswordField.text?.trim().toString()
                 )
-            } else
+            } else {
                 Log.d(logTag, "Username and Password field is in invalid format")
-            it.isEnabled = true
+                enableInput(view)
+                registerProgressIndicator.visibility = View.INVISIBLE
+            }
+
         }
 
         //Select 'Login' tab if user has account
@@ -78,7 +88,13 @@ class RegisterFragment : Fragment() {
     }
 
     private fun registerAccount(view: View, email: String, password: String) {
+
+        val registerProgressIndicator: LinearProgressIndicator =
+            view.findViewById(R.id.register_progress)
+
         firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            enableInput(view)
+            registerProgressIndicator.visibility = View.INVISIBLE
             if (task.isSuccessful) {
                 Log.d(logTag, "Task successful" + task.result.user?.email)
                 task.result.user?.sendEmailVerification()
@@ -154,6 +170,21 @@ class RegisterFragment : Fragment() {
     private fun isEmailValid(email: String): Boolean {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
+
+    private fun disableInput(view: View) {
+        view.findViewById<MaterialButton>(R.id.register_button).isEnabled = false
+        view.findViewById<TextInputEditText>(R.id.reg_email_field).isEnabled = false
+        view.findViewById<TextInputEditText>(R.id.reg_password_field).isEnabled = false
+        view.findViewById<TextInputEditText>(R.id.reg_confirm_password_field).isEnabled = false
+    }
+
+    private fun enableInput(view: View) {
+        view.findViewById<MaterialButton>(R.id.register_button).isEnabled = true
+        view.findViewById<TextInputEditText>(R.id.reg_email_field).isEnabled = true
+        view.findViewById<TextInputEditText>(R.id.reg_password_field).isEnabled = true
+        view.findViewById<TextInputEditText>(R.id.reg_confirm_password_field).isEnabled = true
+    }
+
 
     companion object {
         @JvmStatic

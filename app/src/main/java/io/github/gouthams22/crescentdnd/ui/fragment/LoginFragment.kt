@@ -17,6 +17,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.FirebaseAuth
@@ -38,11 +39,6 @@ class LoginFragment : Fragment() {
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var rootView: View
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        // If you are carrying any parameter
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,13 +47,18 @@ class LoginFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_login, container, false)
         rootView = view
 
+        // Loading bar
+        val loginProgressIndicator: LinearProgressIndicator = view.findViewById(R.id.login_progress)
+
         val loginEmailField: TextInputEditText = view.findViewById(R.id.login_email_field)
         val loginPasswordField: TextInputEditText = view.findViewById(R.id.login_password_field)
         val forgotPasswordTextView: MaterialTextView = view.findViewById(R.id.forgot_password)
 
         //redirecting to ForgotPasswordActivity
         forgotPasswordTextView.setOnClickListener {
-            startActivity(Intent(view.context,ForgotPasswordActivity::class.java))
+            loginProgressIndicator.visibility = View.VISIBLE
+            startActivity(Intent(view.context, ForgotPasswordActivity::class.java))
+            loginProgressIndicator.visibility = View.INVISIBLE
         }
 
         // Firebase Authentication Instance
@@ -78,9 +79,8 @@ class LoginFragment : Fragment() {
         val loginButton: MaterialButton = view.findViewById(R.id.login_button)
         //set on click listener for Login button
         loginButton.setOnClickListener {
-            loginButton.isEnabled = false
-            loginEmailField.isEnabled = false
-            loginPasswordField.isEnabled = false
+            disableInput(view)
+            loginProgressIndicator.visibility = View.VISIBLE
             val isValid = validateFields(loginEmailField, loginPasswordField)
             Log.d(
                 logTag,
@@ -91,9 +91,13 @@ class LoginFragment : Fragment() {
                 loginEmailField,
                 loginPasswordField
             )
-            loginButton.isEnabled = true
-            loginEmailField.isEnabled = true
-            loginPasswordField.isEnabled = true
+            else {
+                // Password format incorrect, reset password field
+                loginPasswordField.text = null
+
+                loginProgressIndicator.visibility = View.INVISIBLE
+                enableInput(view)
+            }
         }
         return view
     }
@@ -153,11 +157,15 @@ class LoginFragment : Fragment() {
         emailField: TextInputEditText,
         passwordField: TextInputEditText
     ) {
+        val loginProgressIndicator: LinearProgressIndicator = view.findViewById(R.id.login_progress)
+
         val email: String = emailField.text?.trim().toString()
         val password: String = passwordField.text?.trim().toString()
 
         // Signing in with Email and Password
         firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            enableInput(view)
+            loginProgressIndicator.visibility = View.INVISIBLE
             if (task.isSuccessful) {
                 Log.d(logTag, "Login Success, User:" + firebaseAuth.currentUser)
                 if (firebaseAuth.currentUser?.isEmailVerified == true) {
@@ -187,6 +195,8 @@ class LoginFragment : Fragment() {
             } else {
                 Log.d(logTag, "Login Unsuccessful")
                 Toast.makeText(view.context, "Login Unsuccessful", Toast.LENGTH_SHORT).show()
+
+                // Login unsuccessful, reset password field
                 passwordField.text = null
             }
         }
@@ -230,6 +240,18 @@ class LoginFragment : Fragment() {
     private fun isEmailValid(email: String): Boolean {
         // Using Regular Expressions
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+
+    private fun disableInput(view: View) {
+        view.findViewById<TextInputEditText>(R.id.login_email_field).isEnabled = false
+        view.findViewById<TextInputEditText>(R.id.login_password_field).isEnabled = false
+        view.findViewById<MaterialButton>(R.id.login_button).isEnabled = false
+    }
+
+    private fun enableInput(view: View) {
+        view.findViewById<TextInputEditText>(R.id.login_email_field).isEnabled = true
+        view.findViewById<TextInputEditText>(R.id.login_password_field).isEnabled = true
+        view.findViewById<MaterialButton>(R.id.login_button).isEnabled = true
     }
 
     companion object {
