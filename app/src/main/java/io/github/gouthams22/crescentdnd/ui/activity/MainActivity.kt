@@ -29,7 +29,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Resizing window to fit on system window size
         WindowCompat.setDecorFitsSystemWindows(window, false)
+
         // Firebase Authentication
         firebaseAuth = FirebaseAuth.getInstance()
 
