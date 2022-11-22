@@ -2,9 +2,12 @@ package io.github.gouthams22.crescentdnd.ui.activity
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import io.github.gouthams22.crescentdnd.R
@@ -18,6 +21,9 @@ class ForgotPasswordActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_forgot_password)
 
+        // Resizing window to fit on system window size
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         // Retrieving the Firebase Auth instance
         firebaseAuth = FirebaseAuth.getInstance()
 
@@ -26,8 +32,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
 
         forgotPasswordButton.setOnClickListener {
             // Locking email field and button to not be able to interact
-            forgotPasswordButton.isEnabled = false
-            forgotEmailEditText.isEnabled = false
+            disableInput()
             if (isEmailValid(forgotEmailEditText.text?.trim().toString())) {
                 Log.d(logTag, "isEmailValid: true")
                 firebaseAuth.sendPasswordResetEmail(forgotEmailEditText.text?.trim().toString())
@@ -38,8 +43,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
                         )
 
                         // Releasing email field and button to be able to interact
-                        forgotPasswordButton.isEnabled = true
-                        forgotEmailEditText.isEnabled = true
+                        enableInput()
 
                         // Displaying if task is successful
                         Toast.makeText(
@@ -52,8 +56,28 @@ class ForgotPasswordActivity : AppCompatActivity() {
                         if (task.isSuccessful)
                             finish()
                     }
+            } else {
+                Toast.makeText(applicationContext, "Invalid email format", Toast.LENGTH_SHORT)
+                    .show()
+                enableInput()
             }
         }
+    }
+
+    private fun enableInput() {
+        // Progress Indicator invisible
+        findViewById<LinearProgressIndicator>(R.id.forgot_progress).visibility = View.INVISIBLE
+
+        findViewById<TextInputEditText>(R.id.forgot_email_field).isEnabled = true
+        findViewById<MaterialButton>(R.id.forgot_password_button).isEnabled = true
+    }
+
+    private fun disableInput() {
+        // Progress Indicator visible
+        findViewById<LinearProgressIndicator>(R.id.forgot_progress).visibility = View.VISIBLE
+
+        findViewById<TextInputEditText>(R.id.forgot_email_field).isEnabled = false
+        findViewById<MaterialButton>(R.id.forgot_password_button).isEnabled = false
     }
 
     /**
