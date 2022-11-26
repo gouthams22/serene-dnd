@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.CrescentDND" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.SereneDND" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/cyan_light</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
@@ -11,6 +11,7 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
         <!-- Customize your theme here. -->
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>

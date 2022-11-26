@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace 'io.github.gouthams22.crescentdnd'
+    namespace 'io.github.gouthams22.serenednd'
     compileSdk 33
 
     defaultConfig {
-        applicationId "io.github.gouthams22.crescentdnd"
+        applicationId "io.github.gouthams22.serenednd"
         minSdk 26
         targetSdk 33
         versionCode 1

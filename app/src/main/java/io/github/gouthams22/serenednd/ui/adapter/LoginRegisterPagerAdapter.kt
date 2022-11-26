@@ -1,11 +1,11 @@
-package io.github.gouthams22.crescentdnd.ui.adapter
+package io.github.gouthams22.serenednd.ui.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import io.github.gouthams22.crescentdnd.ui.fragment.LoginFragment
-import io.github.gouthams22.crescentdnd.ui.fragment.RegisterFragment
+import io.github.gouthams22.serenednd.ui.fragment.LoginFragment
+import io.github.gouthams22.serenednd.ui.fragment.RegisterFragment
 
 class LoginRegisterPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
     FragmentStateAdapter(fragmentManager, lifecycle) {

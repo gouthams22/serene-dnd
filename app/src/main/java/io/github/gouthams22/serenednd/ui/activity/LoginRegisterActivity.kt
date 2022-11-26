@@ -1,12 +1,12 @@
-package io.github.gouthams22.crescentdnd.ui.activity
+package io.github.gouthams22.serenednd.ui.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import io.github.gouthams22.crescentdnd.R
-import io.github.gouthams22.crescentdnd.ui.adapter.LoginRegisterPagerAdapter
+import io.github.gouthams22.serenednd.R
+import io.github.gouthams22.serenednd.ui.adapter.LoginRegisterPagerAdapter
 
 class LoginRegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
