@@ -37,6 +37,7 @@
         android:backgroundTint="@color/get_started_button"
         android:padding="16dp"
         android:text="@string/get_started"
+        android:textAllCaps="true"
         android:textColor="@color/get_started_background"
         android:textSize="@dimen/text_size_16"
         android:textStyle="bold"
