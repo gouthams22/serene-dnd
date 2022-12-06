@@ -12,7 +12,7 @@ class LoginRegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login_register)
-        window.statusBarColor = this.resources.getColor(R.color.deep_orange_700, theme)
+        window.statusBarColor = this.resources.getColor(R.color.get_started_background, theme)
 
         //Tab Layout and its ViewPager
         val tabLayout = findViewById<TabLayout>(R.id.login_register_tab)

@@ -19,13 +19,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/deep_orange_700">
+            android:background="@color/get_started_background">
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/app_logo"
-                android:src="@drawable/app_icon_dark"
+                android:src="@drawable/leaf_svgrepo_com"
                 app:layout_constraintBottom_toTopOf="@id/login_register_tab"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -35,10 +35,10 @@
                 android:id="@+id/login_register_tab"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/deep_orange_700"
+                android:background="@color/get_started_background"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:tabIndicatorColor="@color/login_register_tab_color_indicator"
-                app:tabSelectedTextColor="@color/black"
+                app:tabSelectedTextColor="@color/login_register_tab_text"
                 app:tabTextColor="#795548" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
