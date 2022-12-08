@@ -1,4 +1,4 @@
-package io.github.gouthams22.crescentdnd.ui.activity
+package io.github.gouthams22.serenednd.ui.activity
 
 import android.app.Activity
 import android.content.Intent
@@ -12,7 +12,7 @@ import androidx.core.view.WindowCompat
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.firebase.auth.FirebaseAuth
-import io.github.gouthams22.crescentdnd.R
+import io.github.gouthams22.serenednd.R
 
 class MainActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth

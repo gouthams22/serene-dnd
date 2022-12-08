@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "mobileSdkAppId",
         "android_client_info": {
-          "package_name": "io.github.gouthams22.crescentdnd.free"
+          "package_name": "io.github.gouthams22.serenednd.free"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "clientId",
           "client_type": 1,
           "android_info": {
-            "package_name": "io.github.gouthams22.crescentdnd.free",
+            "package_name": "io.github.gouthams22.serenednd.free",
             "certificate_hash": "yourCertificateHash"
           }
         },
@@ -46,7 +46,7 @@
       "client_info": {
         "mobilesdk_app_id": "MobileSdkAppId",
         "android_client_info": {
-          "package_name": "io.github.gouthams22.crescentdnd.paid"
+          "package_name": "io.github.gouthams22.serenednd.paid"
         }
       },
       "oauth_client": [
@@ -54,7 +54,7 @@
           "client_id": "clientId",
           "client_type": 1,
           "android_info": {
-            "package_name": "io.github.gouthams22.crescentdnd.paid",
+            "package_name": "io.github.gouthams22.serenednd.paid",
             "certificate_hash": "yourCertificateHash"
           }
         },

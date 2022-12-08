@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Crescent DND</string>
+    <string name="app_name">Serene DND</string>
     <string name="get_started">Get Started</string>
     <string name="app_logo">App logo</string>
     <string name="registration">Registration</string>
@@ -13,4 +13,5 @@
     <string name="login_with_google">Login with Google</string>
     <string name="log_out">Log Out</string>
     <string name="send_reset_link">Send reset link</string>
+    <string name="settings">Settings</string>
 </resources>

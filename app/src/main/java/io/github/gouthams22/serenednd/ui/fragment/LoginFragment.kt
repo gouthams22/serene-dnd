@@ -1,4 +1,4 @@
-package io.github.gouthams22.crescentdnd.ui.fragment
+package io.github.gouthams22.serenednd.ui.fragment
 
 import android.app.Activity
 import android.content.Intent
@@ -22,10 +22,10 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import io.github.gouthams22.crescentdnd.R
-import io.github.gouthams22.crescentdnd.ui.activity.ForgotPasswordActivity
-import io.github.gouthams22.crescentdnd.ui.activity.HomeActivity
-import io.github.gouthams22.crescentdnd.ui.activity.LoginRegisterActivity
+import io.github.gouthams22.serenednd.R
+import io.github.gouthams22.serenednd.ui.activity.ForgotPasswordActivity
+import io.github.gouthams22.serenednd.ui.activity.HomeActivity
+import io.github.gouthams22.serenednd.ui.activity.LoginRegisterActivity
 
 /**
  * A simple [Fragment] subclass.
