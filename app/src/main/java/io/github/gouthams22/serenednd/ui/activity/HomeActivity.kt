@@ -11,9 +11,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.textview.MaterialTextView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import io.github.gouthams22.serenednd.R
+import io.github.gouthams22.serenednd.ui.fragment.HomeFragment
+import io.github.gouthams22.serenednd.ui.fragment.LocationFragment
+import io.github.gouthams22.serenednd.ui.fragment.PriorityFragment
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
@@ -52,14 +55,42 @@ class HomeActivity : AppCompatActivity() {
 
         // Check and redirect if no user is present
         redirectIfNoUser()
-        val isVerified = firebaseAuth.currentUser?.isEmailVerified
-        findViewById<MaterialTextView>(R.id.user_details).text = isVerified.toString()
-//        findViewById<MaterialButton>(R.id.logout_button).setOnClickListener {
-//            firebaseAuth.signOut()
-//            Log.d(logTag, if (firebaseAuth.currentUser != null) "Still signed in" else "Nope")
-//            startActivity(Intent(this, MainActivity::class.java))
-//            finish()
-//        }
+        val isEmailVerified = firebaseAuth.currentUser?.isEmailVerified
+        Log.d(logTag, "isEmailVerified: $isEmailVerified")
+
+        // Bottom Navigation
+        val bottomNavigationView: BottomNavigationView = findViewById(R.id.home_navbar)
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.home -> {
+                    Log.d(logTag, "navbar: ${getString(R.string.home)}")
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.home_fragment_container_view, HomeFragment.newInstance())
+                        .commit()
+                    true
+                }
+                R.id.priority -> {
+                    Log.d(logTag, "navbar: ${getString(R.string.priority)}")
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.home_fragment_container_view, PriorityFragment.newInstance())
+                        .commit()
+                    true
+                }
+                R.id.location -> {
+                    Log.d(logTag, "navbar: ${getString(R.string.location)}")
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.home_fragment_container_view, LocationFragment.newInstance())
+                        .commit()
+                    true
+                }
+                else -> {
+                    Log.d(logTag, "navbar: False")
+                    false
+                }
+            }
+        }
+        // Setting default view when activity is opened
+        bottomNavigationView.selectedItemId = R.id.home
     }
 
     private fun checkPermission(): Boolean {
