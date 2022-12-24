@@ -15,6 +15,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.SignInButton
 import com.google.android.gms.tasks.Task
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
@@ -70,8 +71,9 @@ class LoginFragment : Fragment() {
         googleSignInClient = GoogleSignIn.getClient(view.context as LoginRegisterActivity, gso)
 
         //Google login button
-        val loginGoogleButton: MaterialButton = view.findViewById(R.id.login_google_button)
-        loginGoogleButton.setOnClickListener {
+        val googleSignInButton: SignInButton = view.findViewById(R.id.sign_in_google_button)
+        googleSignInButton.setSize(SignInButton.SIZE_WIDE)
+        googleSignInButton.setOnClickListener {
             signIntoGoogle()
         }
 

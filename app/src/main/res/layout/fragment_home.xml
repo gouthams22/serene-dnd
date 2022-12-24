@@ -8,6 +8,7 @@
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/welcome_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/home"
@@ -15,5 +16,64 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/button_dnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_button"
+        android:contentDescription="@string/dnd_on_off_description"
+        android:padding="50dp"
+        android:scaleX="0.7"
+        android:scaleY="0.7"
+        android:src="@drawable/leaf_svgrepo_com"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/type_toggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/welcome_text"
+        app:selectionRequired="true"
+        app:singleSelection="true">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/total_silence_button"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/total_silence"
+            android:textColor="@color/light_green_700"
+            android:textStyle="bold"
+            app:rippleColor="@color/light_green_700"
+            app:strokeColor="@color/light_green_700" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/priority_only_button"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/priority_only"
+            android:textColor="@color/light_green_700"
+            android:textStyle="bold"
+            app:rippleColor="@color/light_green_700"
+            app:strokeColor="@color/light_green_700" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/calls_only_button"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:foregroundTint="@color/light_green_700"
+            android:text="@string/calls_only"
+            android:textStyle="bold"
+            app:iconTint="@color/light_green_700"
+            app:rippleColor="@color/light_green_700" />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

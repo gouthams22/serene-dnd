@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@android:color/white">
+    <item android:id="@+id/circle_border" >
+        <shape android:shape="oval">
+            <solid android:color="@color/deep_orange_700"/>
+            <stroke
+                android:width="16dp"
+                android:color="@color/login_register_tab_text" />
+        </shape>
+    </item>
+
+</ripple>

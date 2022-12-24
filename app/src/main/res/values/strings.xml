@@ -18,4 +18,8 @@
     <string name="priority">Priority</string>
     <string name="location">Location</string>
     <string name="not_yet_finished">Not yet finished</string>
+    <string name="dnd_on_off_description">DND On-Off Button</string>
+    <string name="total_silence">Total Silence</string>
+    <string name="priority_only">Priority Only</string>
+    <string name="calls_only">Calls Only</string>
 </resources>
