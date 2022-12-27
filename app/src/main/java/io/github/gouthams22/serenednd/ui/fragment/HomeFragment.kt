@@ -16,16 +16,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
+import com.google.android.material.button.MaterialButtonToggleGroup
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.firebase.auth.FirebaseAuth
+import io.github.gouthams22.serenednd.DNDPreference
 import io.github.gouthams22.serenednd.R
 import io.github.gouthams22.serenednd.ui.activity.HomeActivity
 import io.github.gouthams22.serenednd.ui.receiver.DNDStateReceiver
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import kotlinx.coroutines.launch
 
 /**
  * A simple [Fragment] subclass.
@@ -33,27 +35,21 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class HomeFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var rootView: View
     private lateinit var dndStateReceiver: DNDStateReceiver
     private lateinit var notificationManager: NotificationManager
+    private lateinit var dndPreference: DNDPreference
 
+    private val dndType = arrayListOf("Total Silence", "Priority Only", "Calls Only")
+    private val dndTypeId =
+        arrayListOf(R.id.total_silence_button, R.id.priority_only_button, R.id.calls_only_button)
+    private var currentType = "None"
     private val logTag = "HomeFragment"
-    private val onColorId = android.R.color.holo_green_dark
-    private val offColorId = android.R.color.holo_red_dark
+    private val onColorId = R.color.dnd_button_on
+    private val offColorId = R.color.dnd_button_off
     private val Int.px: Int get() = (this * Resources.getSystem().displayMetrics.density).toInt()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -79,11 +75,86 @@ class HomeFragment : Fragment() {
         val welcomeText: TextView = view.findViewById(R.id.welcome_text)
         welcomeText.text = firebaseAuth.currentUser?.email.toString()
 
+        // MaterialButtonToggleGroup
+        val typeToggle: MaterialButtonToggleGroup = view.findViewById(R.id.type_toggle)
+        typeToggle.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (isChecked)
+                when (checkedId) {
+                    dndTypeId[0] -> {
+                        setTypePreferences(dndType[0])
+                    }
+                    dndTypeId[1] -> {
+                        setTypePreferences(dndType[1])
+                    }
+                    dndTypeId[2] -> {
+                        setTypePreferences(dndType[2])
+                    }
+                }
+        }
+
+        // Preferences Data Store
+        dndPreference = DNDPreference(view.context)
+        //TODO: Update Preference and MaterialToggleButtonGroup
+        dndPreference.typePreference.asLiveData().observe(viewLifecycleOwner) { value ->
+            Log.d(logTag, "onCreateView: DataStore Type Preferences: $value")
+            currentType = value
+            when (value) {
+                "None" -> setTypePreferences(dndType[0])
+                dndType[0] ->
+                    if (typeToggle.checkedButtonId != dndTypeId[0])
+                        typeToggle.check(dndTypeId[0])
+
+                dndType[1] ->
+                    if (typeToggle.checkedButtonId != dndTypeId[1])
+                        typeToggle.check(dndTypeId[1])
+                dndType[2] ->
+                    if (typeToggle.checkedButtonId != dndTypeId[2])
+                        typeToggle.check(dndTypeId[2])
+            }
+        }
+
+        // Duration Selection field
+        val durationTextView: MaterialAutoCompleteTextView =
+            view.findViewById(R.id.duration_auto_complete)
+
+        durationTextView.setOnItemClickListener { _, _, position, _ ->
+            when (position) {
+                // None
+                0 -> {
+                    //TODO: Implement none
+                    Toast.makeText(view.context, "None", Toast.LENGTH_SHORT).show()
+                }
+                // Time based DND
+                1 -> {
+                    //TODO: Implement time
+                    Toast.makeText(view.context, "Time", Toast.LENGTH_SHORT).show()
+                }
+                // Location based DND
+                2 -> {
+                    //TODO: Implement location
+                    Toast.makeText(view.context, "Location", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        // DND Image Button to toggle
+        val dndButton: ImageButton = view.findViewById(R.id.button_dnd)
+        dndButton.setOnClickListener {
+            val isDndOn = isDndTurnedOn()
+            if (isDndOn) {
+                // Turn off
+                turnDndOff(view)
+            } else {
+                //Turn on
+                turnDndOn(view)
+            }
+        }
+
         //DND button solid color for Versions above S(31)
         if (VERSION.SDK_INT >= VERSION_CODES.S) {
             setButtonSolidColor(android.R.color.system_accent1_200)
         } else {
-            setButtonSolidColor(R.color.light_green_700)
+            setButtonSolidColor(android.R.color.transparent)
         }
 
         return view
@@ -104,6 +175,23 @@ class HomeFragment : Fragment() {
         rootView.context.unregisterReceiver(dndStateReceiver)
     }
 
+    private fun turnDndOn(view: View) {
+        //TODO: Update DND based on preferences
+        notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE)
+    }
+
+    private fun turnDndOff(view: View) {
+        //TODO: Update DND based on preferences
+        notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
+    }
+
+    private fun setTypePreferences(type: String) {
+        lifecycleScope.launch {
+            dndPreference.storeTypePreference(type)
+        }
+    }
+
+
     /**
      * Function to change the stroke color of dnd button
      * @param colorId: Id of color to be assigned to dnd button
@@ -118,6 +206,10 @@ class HomeFragment : Fragment() {
         )
     }
 
+    /**
+     * Function to change the solid color of dnd button
+     * @param colorId: Id of color to be assigned to dnd button
+     */
     private fun setButtonSolidColor(colorId: Int) {
         val dndButton: ImageButton = rootView.findViewById(R.id.button_dnd)
         val rippleDrawable: RippleDrawable = dndButton.background as RippleDrawable
@@ -142,23 +234,12 @@ class HomeFragment : Fragment() {
         notificationManager.currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_ALL
 
     companion object {
-        //        /**
-//         * Use this factory method to create a new instance of
-//         * this fragment using the provided parameters.
-//         *
-//         * @param param1 Parameter 1.
-//         * @param param2 Parameter 2.
-//         * @return A new instance of fragment HomeFragment.
-//         */
-//        // TODO: Rename and change types and number of parameters
-//        @JvmStatic
-//        fun newInstance(param1: String, param2: String) =
-//            HomeFragment().apply {
-//                arguments = Bundle().apply {
-//                    putString(ARG_PARAM1, param1)
-//                    putString(ARG_PARAM2, param2)
-//                }
-//            }
+        /**
+         * Use this factory method to create a new instance of
+         * this fragment.
+         *
+         * @return A new instance of fragment HomeFragment.
+         */
         @JvmStatic
         fun newInstance() = HomeFragment()
     }

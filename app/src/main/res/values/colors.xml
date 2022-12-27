@@ -29,4 +29,6 @@
     <color name="light_green_200">#A5D6A7</color>
     <color name="light_green_500">#8BC34A</color>
     <color name="light_green_700">#689F38</color>
+    <color name="dnd_button_on">@android:color/holo_green_dark</color>
+    <color name="dnd_button_off">@android:color/holo_red_dark</color>
 </resources>
