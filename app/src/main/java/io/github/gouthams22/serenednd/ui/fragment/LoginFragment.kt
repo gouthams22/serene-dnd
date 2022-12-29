@@ -35,7 +35,6 @@ import io.github.gouthams22.serenednd.ui.activity.LoginRegisterActivity
  */
 class LoginFragment : Fragment() {
 
-    private val logTag: String = "LoginFragment"
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var rootView: View
@@ -85,7 +84,7 @@ class LoginFragment : Fragment() {
             loginProgressIndicator.visibility = View.VISIBLE
             val isValid = validateFields(loginEmailField, loginPasswordField)
             Log.d(
-                logTag,
+                TAG,
                 if (isValid) "Login Form fields are in valid state" else "Login Form is invalid"
             )
             if (isValid) authenticateFirebase(
@@ -130,21 +129,21 @@ class LoginFragment : Fragment() {
 
     private fun updateFirebaseCredential(account: GoogleSignInAccount) {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-        Log.d(logTag, "update Firebase credential")
+        Log.d(TAG, "update Firebase credential")
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
-            Log.d(logTag, "Successful authentication")
+            Log.d(TAG, "Successful authentication")
             startHomeActivity()
         }
             .addOnCanceledListener {
                 Toast.makeText(rootView.context, "Canceled", Toast.LENGTH_SHORT).show()
-                Log.d(logTag, "Canceled Firebase Authentication")
+                Log.d(TAG, "Canceled Firebase Authentication")
             }
     }
 
     private fun startHomeActivity() {
         //Add parameters or other feature if necessary
         val loginRegisterActivity = rootView.context as LoginRegisterActivity
-        Log.d(logTag, "startHomeActivity: " + loginRegisterActivity.parent.toString())
+        Log.d(TAG, "startHomeActivity: " + loginRegisterActivity.parent.toString())
         val intent = Intent(rootView.context, HomeActivity::class.java)
         (rootView.context as LoginRegisterActivity).setResult(
             AppCompatActivity.RESULT_OK,
@@ -169,11 +168,11 @@ class LoginFragment : Fragment() {
             enableInput(view)
             loginProgressIndicator.visibility = View.INVISIBLE
             if (task.isSuccessful) {
-                Log.d(logTag, "Login Success, User:" + firebaseAuth.currentUser)
+                Log.d(TAG, "Login Success, User:" + firebaseAuth.currentUser)
                 if (firebaseAuth.currentUser?.isEmailVerified == true) {
                     startHomeActivity()
                 } else {
-                    Log.d(logTag, "Login Success, email not verified")
+                    Log.d(TAG, "Login Success, email not verified")
                     task.result.user?.sendEmailVerification()
                         ?.addOnCompleteListener { verificationTask ->
                             if (verificationTask.isSuccessful) {
@@ -195,7 +194,7 @@ class LoginFragment : Fragment() {
                     }
                 }
             } else {
-                Log.d(logTag, "Login Unsuccessful")
+                Log.d(TAG, "Login Unsuccessful")
                 Toast.makeText(view.context, "Login Unsuccessful", Toast.LENGTH_SHORT).show()
 
                 // Login unsuccessful, reset password field
@@ -258,7 +257,14 @@ class LoginFragment : Fragment() {
 
     companion object {
 
+        /**
+         * Use this factory method to create a new instance of
+         * this fragment.
+         *
+         * @return A new instance of fragment LoginFragment.
+         */
         @JvmStatic
         fun newInstance() = LoginFragment()
+        private const val TAG = "LoginFragment"
     }
 }

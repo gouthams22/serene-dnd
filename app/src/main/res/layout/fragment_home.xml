@@ -95,4 +95,12 @@
             app:simpleItems="@array/dnd_duration" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <include
+        android:id="@+id/layout_time"
+        layout="@layout/content_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_registration"
+        app:layout_constraintTop_toBottomOf="@id/duration_text_input_layout" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

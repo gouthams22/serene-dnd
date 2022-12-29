@@ -17,11 +17,15 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.allViews
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButtonToggleGroup
+import com.google.android.material.slider.Slider
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import io.github.gouthams22.serenednd.DNDPreference
 import io.github.gouthams22.serenednd.R
@@ -41,12 +45,16 @@ class HomeFragment : Fragment() {
     private lateinit var dndStateReceiver: DNDStateReceiver
     private lateinit var notificationManager: NotificationManager
     private lateinit var dndPreference: DNDPreference
+    private lateinit var dndDuration: Array<String>
 
     private val dndType = arrayListOf("Total Silence", "Priority Only", "Calls Only")
     private val dndTypeId =
         arrayListOf(R.id.total_silence_button, R.id.priority_only_button, R.id.calls_only_button)
+    private val timeDivisions =
+        arrayListOf("15 m", "30 m", "45 m", "1 h", "1 h 30 m", "2 h", "3 h", "4 h", "5 h", "6 h")
+
     private var currentType = "None"
-    private val logTag = "HomeFragment"
+    private var currentDuration = "Always"
     private val onColorId = R.color.dnd_button_on
     private val offColorId = R.color.dnd_button_off
     private val Int.px: Int get() = (this * Resources.getSystem().displayMetrics.density).toInt()
@@ -60,6 +68,8 @@ class HomeFragment : Fragment() {
 
         // Initializing rootView
         rootView = view
+
+        dndDuration = resources.getStringArray(R.array.dnd_duration)
 
         // Get Firebase Auth instance
         firebaseAuth = FirebaseAuth.getInstance()
@@ -75,9 +85,18 @@ class HomeFragment : Fragment() {
         val welcomeText: TextView = view.findViewById(R.id.welcome_text)
         welcomeText.text = firebaseAuth.currentUser?.email.toString()
 
+        val timeRootView: ConstraintLayout = view.findViewById(R.id.layout_time)
+        val timeSlider: Slider = view.findViewById(R.id.time_slider)
+        timeSlider.valueFrom = 0F
+        timeSlider.valueTo = timeDivisions.size.toFloat() - 1
+        timeSlider.stepSize = 1F
+        timeSlider.value = 0F
+        timeSlider.setLabelFormatter { value -> timeDivisions[value.toInt()] }
+
         // MaterialButtonToggleGroup
         val typeToggle: MaterialButtonToggleGroup = view.findViewById(R.id.type_toggle)
         typeToggle.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            Log.d(TAG, "onButtonClick: ToggleGroup: ${dndType[dndTypeId.indexOf(checkedId)]}")
             if (isChecked)
                 when (checkedId) {
                     dndTypeId[0] -> {
@@ -92,18 +111,57 @@ class HomeFragment : Fragment() {
                 }
         }
 
+        // Duration MaterialAutoCompleteTextView Field
+        val durationTextView: MaterialAutoCompleteTextView =
+            view.findViewById(R.id.duration_auto_complete)
+        durationTextView.setOnItemClickListener { _, _, position, _ ->
+            Log.d(TAG, "onCreateView: Duration: ${dndDuration[position]}")
+            when (position) {
+                // Always
+                0 -> {
+                    //TODO: Implement none
+                    setDurationPreferences(dndDuration[0])
+                    Toast.makeText(view.context, dndDuration[0], Toast.LENGTH_SHORT).show()
+                }
+                // Time based DND
+                1 -> {
+                    //TODO: Implement time
+                    timeRootView.visibility = View.VISIBLE
+                    Toast.makeText(view.context, dndDuration[1], Toast.LENGTH_SHORT).show()
+                }
+                // Location based DND
+                2 -> {
+                    //TODO: Implement location
+                    setDurationPreferences(dndDuration[2])
+                    Toast.makeText(view.context, dndDuration[2], Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        // DND Image Button to toggle
+        val dndButton: ImageButton = view.findViewById(R.id.button_dnd)
+        dndButton.setOnClickListener {
+            Log.d(TAG, "onClick: dndButton")
+            val isDndOn = isDndTurnedOn()
+            if (isDndOn) {
+                // Turn off
+                turnDndOff(view)
+            } else {
+                //Turn on
+                turnDndOn(view)
+            }
+        }
+
         // Preferences Data Store
         dndPreference = DNDPreference(view.context)
-        //TODO: Update Preference and MaterialToggleButtonGroup
         dndPreference.typePreference.asLiveData().observe(viewLifecycleOwner) { value ->
-            Log.d(logTag, "onCreateView: DataStore Type Preferences: $value")
+            Log.d(TAG, "DNDPreference: Type Preferences: $value")
             currentType = value
             when (value) {
                 "None" -> setTypePreferences(dndType[0])
                 dndType[0] ->
                     if (typeToggle.checkedButtonId != dndTypeId[0])
                         typeToggle.check(dndTypeId[0])
-
                 dndType[1] ->
                     if (typeToggle.checkedButtonId != dndTypeId[1])
                         typeToggle.check(dndTypeId[1])
@@ -112,41 +170,28 @@ class HomeFragment : Fragment() {
                         typeToggle.check(dndTypeId[2])
             }
         }
-
-        // Duration Selection field
-        val durationTextView: MaterialAutoCompleteTextView =
-            view.findViewById(R.id.duration_auto_complete)
-
-        durationTextView.setOnItemClickListener { _, _, position, _ ->
-            when (position) {
-                // None
-                0 -> {
-                    //TODO: Implement none
-                    Toast.makeText(view.context, "None", Toast.LENGTH_SHORT).show()
+        dndPreference.durationPreference.asLiveData().observe(viewLifecycleOwner) { value ->
+            Log.d(TAG, "dndPreference: Duration Preferences: $value")
+            currentDuration = value
+            timeRootView.visibility = View.GONE
+            when (value) {
+                "None" -> setDurationPreferences(dndDuration[0])
+                // Always
+                dndDuration[0] ->
+                    if (durationTextView.text.toString() != dndDuration[0])
+                        durationTextView.setText(dndDuration[0], false)
+                // Time Based DND
+                dndDuration[1] -> {
+                    timeRootView.visibility = View.VISIBLE
+                    if (durationTextView.text.toString() != dndDuration[1]) {
+                        durationTextView.setText(dndDuration[1], false)
+                    }
                 }
-                // Time based DND
-                1 -> {
-                    //TODO: Implement time
-                    Toast.makeText(view.context, "Time", Toast.LENGTH_SHORT).show()
-                }
-                // Location based DND
-                2 -> {
-                    //TODO: Implement location
-                    Toast.makeText(view.context, "Location", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
+                // Location Based DND
+                dndDuration[2] ->
+                    if (durationTextView.text.toString() != dndDuration[2])
+                        durationTextView.setText(dndDuration[2], false)
 
-        // DND Image Button to toggle
-        val dndButton: ImageButton = view.findViewById(R.id.button_dnd)
-        dndButton.setOnClickListener {
-            val isDndOn = isDndTurnedOn()
-            if (isDndOn) {
-                // Turn off
-                turnDndOff(view)
-            } else {
-                //Turn on
-                turnDndOn(view)
             }
         }
 
@@ -162,32 +207,63 @@ class HomeFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        Log.d(TAG, "onStop: dndStateReceiver started")
         rootView.context.registerReceiver(
             dndStateReceiver,
             IntentFilter(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED)
         )
         setDndButtonColor()
-        Log.d(logTag, "onStart: DND state: ${notificationManager.currentInterruptionFilter}")
+        Log.d(TAG, "onStart: DND state: ${notificationManager.currentInterruptionFilter}")
     }
 
     override fun onStop() {
         super.onStop()
+        Log.d(TAG, "onStop: dndStateReceiver stopped")
         rootView.context.unregisterReceiver(dndStateReceiver)
     }
 
     private fun turnDndOn(view: View) {
-        //TODO: Update DND based on preferences
-        notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE)
+        // TODO: Update DND based on preferences
+        Log.d(TAG, "turnDndOn: turning on")
+        // Disable Inputs
+        for (i in view.findViewById<MaterialButtonToggleGroup>(R.id.type_toggle).allViews) {
+            i.isEnabled = false
+        }
+        view.findViewById<TextInputLayout>(R.id.duration_text_input_layout).isEnabled = false
+        when (currentDuration) {
+            dndDuration[0] ->
+                when (currentType) {
+                    dndType[0] -> notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE)
+                    dndType[1] -> notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY)
+                    dndType[2] -> notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALARMS)
+                }
+            dndDuration[1] -> notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE)
+            dndDuration[2] -> notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE)
+        }
     }
 
     private fun turnDndOff(view: View) {
-        //TODO: Update DND based on preferences
+        // TODO: Update DND based on preferences
+        Log.d(TAG, "turnDndOn: turning off")
+        // Enable Inputs
+        for (i in view.findViewById<MaterialButtonToggleGroup>(R.id.type_toggle).allViews) {
+            i.isEnabled = true
+        }
+        view.findViewById<TextInputLayout>(R.id.duration_text_input_layout).isEnabled = true
         notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
     }
 
     private fun setTypePreferences(type: String) {
+        Log.d(TAG, "setTypePreferences: $type")
         lifecycleScope.launch {
             dndPreference.storeTypePreference(type)
+        }
+    }
+
+    private fun setDurationPreferences(duration: String) {
+        Log.d(TAG, "setDurationPreferences: $duration")
+        lifecycleScope.launch {
+            dndPreference.storeDurationPreference(duration)
         }
     }
 
@@ -197,6 +273,7 @@ class HomeFragment : Fragment() {
      * @param colorId: Id of color to be assigned to dnd button
      */
     private fun setButtonStrokeColor(colorId: Int) {
+        Log.d(TAG, "setButtonStrokeColor: $colorId")
         val dndButton: ImageButton = rootView.findViewById(R.id.button_dnd)
         val rippleDrawable: RippleDrawable = dndButton.background as RippleDrawable
         val shapeDrawable = rippleDrawable.getDrawable(0) as GradientDrawable
@@ -211,6 +288,7 @@ class HomeFragment : Fragment() {
      * @param colorId: Id of color to be assigned to dnd button
      */
     private fun setButtonSolidColor(colorId: Int) {
+        Log.d(TAG, "setButtonSolidColor: $colorId")
         val dndButton: ImageButton = rootView.findViewById(R.id.button_dnd)
         val rippleDrawable: RippleDrawable = dndButton.background as RippleDrawable
         val shapeDrawable = rippleDrawable.getDrawable(0) as GradientDrawable
@@ -242,5 +320,6 @@ class HomeFragment : Fragment() {
          */
         @JvmStatic
         fun newInstance() = HomeFragment()
+        private const val TAG = "HomeFragment"
     }
 }

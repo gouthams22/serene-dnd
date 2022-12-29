@@ -8,7 +8,10 @@ import android.util.Log
 import io.github.gouthams22.serenednd.ui.fragment.HomeFragment
 
 class DNDStateReceiver : BroadcastReceiver() {
-    private val logTag = "DNDStateReceiver"
+    companion object {
+        private const val TAG = "DNDStateReceiver"
+    }
+
     private lateinit var homeFragment: HomeFragment
     fun setHomeFragment(fragment: HomeFragment) {
         homeFragment = fragment
@@ -18,11 +21,11 @@ class DNDStateReceiver : BroadcastReceiver() {
         val isDndStateChanged: Boolean =
             intent?.action.equals(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED)
         if (isDndStateChanged) {
-            Log.d(logTag, "onReceive: DND state changed")
+            Log.d(TAG, "onReceive: DND state changed")
         }
         val notificationManager =
             context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         homeFragment.setDndButtonColor()
-        Log.d(logTag, "onReceive: ${notificationManager.currentInterruptionFilter}")
+        Log.d(TAG, "onReceive: ${notificationManager.currentInterruptionFilter}")
     }
 }

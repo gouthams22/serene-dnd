@@ -23,9 +23,6 @@ import io.github.gouthams22.serenednd.ui.activity.LoginRegisterActivity
  */
 class RegisterFragment : Fragment() {
 
-    // Tag
-    private val logTag = "RegisterFragment"
-
     // Firebase Authentication
     private lateinit var firebaseAuth: FirebaseAuth
 
@@ -64,14 +61,14 @@ class RegisterFragment : Fragment() {
             disableInput(view)
             registerProgressIndicator.visibility = View.VISIBLE
             if (validateFields(regEmailField, regPasswordField, regConfirmPasswordField)) {
-                Log.d(logTag, "Username and Password field is in valid format")
+                Log.d(TAG, "Username and Password field is in valid format")
                 registerAccount(
                     view,
                     regEmailField.text?.trim().toString(),
                     regPasswordField.text?.trim().toString()
                 )
             } else {
-                Log.d(logTag, "Username and Password field is in invalid format")
+                Log.d(TAG, "Username and Password field is in invalid format")
                 enableInput(view)
                 registerProgressIndicator.visibility = View.INVISIBLE
             }
@@ -96,7 +93,7 @@ class RegisterFragment : Fragment() {
             enableInput(view)
             registerProgressIndicator.visibility = View.INVISIBLE
             if (task.isSuccessful) {
-                Log.d(logTag, "Task successful" + task.result.user?.email)
+                Log.d(TAG, "Task successful" + task.result.user?.email)
                 task.result.user?.sendEmailVerification()
                     ?.addOnCompleteListener { verificationTask ->
                         if (verificationTask.isSuccessful) {
@@ -117,10 +114,10 @@ class RegisterFragment : Fragment() {
                     firebaseAuth.signOut()
                 }
             } else if (task.isCanceled) {
-                Log.d(logTag, "Create user task is cancelled")
+                Log.d(TAG, "Create user task is cancelled")
                 Toast.makeText(view.context, "Process is cancelled", Toast.LENGTH_SHORT).show()
             } else {
-                Log.d(logTag, "Create user task failed")
+                Log.d(TAG, "Create user task failed")
                 Toast.makeText(view.context, "Registration failed!", Toast.LENGTH_SHORT).show()
             }
         }
@@ -187,7 +184,15 @@ class RegisterFragment : Fragment() {
 
 
     companion object {
+
+        /**
+         * Use this factory method to create a new instance of
+         * this fragment.
+         *
+         * @return A new instance of fragment RegisterFragment.
+         */
         @JvmStatic
         fun newInstance() = RegisterFragment()
+        private const val TAG = "RegisterFragment"
     }
 }
