@@ -14,27 +14,26 @@
         android:fitsSystemWindows="true"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- TODO: Design Home page with bottom navigation -->
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/user_details"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/system_accent1_500"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <!-- TODO: Design Home page -->
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/home_fragment_container_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toTopOf="@+id/home_navbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/home_toolbar"
+        tools:layout="@layout/fragment_home" />
 
-    <!--<com.google.android.material.button.MaterialButton
-        android:id="@+id/logout_button"
-        style="?attr/materialIconButtonOutlinedStyle"
-        android:layout_width="wrap_content"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/home_navbar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_registration"
-        app:cornerRadius="10dp"
-        app:icon="@drawable/ic_outline_logout_24"
-        app:iconGravity="textStart"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/home_toolbar" />-->
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/home_bottom_navigation_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

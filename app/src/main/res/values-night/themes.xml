@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.SereneDND" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/cyan_dark</item>
+        <item name="colorPrimary">@color/green_700</item>
         <item name="colorPrimaryVariant">@color/deep_orange_dark</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
@@ -15,4 +15,9 @@
         <!-- Customize your theme here. -->
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
+
+    <style name="button_overlay">
+        <item name="colorSecondaryContainer">#5F689F38</item>
+    </style>
+
 </resources>

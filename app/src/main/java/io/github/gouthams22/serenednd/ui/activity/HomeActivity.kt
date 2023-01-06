@@ -11,19 +11,26 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.textview.MaterialTextView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import io.github.gouthams22.serenednd.R
+import io.github.gouthams22.serenednd.ui.fragment.HomeFragment
+import io.github.gouthams22.serenednd.ui.fragment.LocationFragment
+import io.github.gouthams22.serenednd.ui.fragment.PriorityFragment
 
 class HomeActivity : AppCompatActivity() {
+
+    companion object {
+        private const val TAG = "HomeActivity"
+    }
+
     private lateinit var firebaseAuth: FirebaseAuth
-    private val logTag = "HomeActivity"
 
     // ActivityResultContracts for Opening Intent to DND Access Settings
     private val requestDNDSettingsActivityResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        Log.d(logTag, "requestDNDPermission: $result")
+        Log.d(TAG, "requestDNDPermission: $result")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +48,7 @@ class HomeActivity : AppCompatActivity() {
         materialToolbar.inflateMenu(R.menu.home_menu)
         materialToolbar.menu.findItem(R.id.logout_menu_item).setOnMenuItemClickListener {
             firebaseAuth.signOut()
-            Log.d(logTag, if (firebaseAuth.currentUser != null) "Still signed in" else "Nope")
+            Log.d(TAG, if (firebaseAuth.currentUser != null) "Still signed in" else "Nope")
             startActivity(Intent(this, MainActivity::class.java))
             finish()
             true
@@ -52,20 +59,48 @@ class HomeActivity : AppCompatActivity() {
 
         // Check and redirect if no user is present
         redirectIfNoUser()
-        val isVerified = firebaseAuth.currentUser?.isEmailVerified
-        findViewById<MaterialTextView>(R.id.user_details).text = isVerified.toString()
-//        findViewById<MaterialButton>(R.id.logout_button).setOnClickListener {
-//            firebaseAuth.signOut()
-//            Log.d(logTag, if (firebaseAuth.currentUser != null) "Still signed in" else "Nope")
-//            startActivity(Intent(this, MainActivity::class.java))
-//            finish()
-//        }
+        val isEmailVerified = firebaseAuth.currentUser?.isEmailVerified
+        Log.d(TAG, "isEmailVerified: $isEmailVerified")
+
+        // Bottom Navigation
+        val bottomNavigationView: BottomNavigationView = findViewById(R.id.home_navbar)
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.home -> {
+                    Log.d(TAG, "navbar: ${getString(R.string.home)}")
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.home_fragment_container_view, HomeFragment.newInstance())
+                        .commit()
+                    true
+                }
+                R.id.priority -> {
+                    Log.d(TAG, "navbar: ${getString(R.string.priority)}")
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.home_fragment_container_view, PriorityFragment.newInstance())
+                        .commit()
+                    true
+                }
+                R.id.location -> {
+                    Log.d(TAG, "navbar: ${getString(R.string.location)}")
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.home_fragment_container_view, LocationFragment.newInstance())
+                        .commit()
+                    true
+                }
+                else -> {
+                    Log.d(TAG, "navbar: False")
+                    false
+                }
+            }
+        }
+        // Setting default view when activity is opened
+        bottomNavigationView.selectedItemId = R.id.home
     }
 
     private fun checkPermission(): Boolean {
         val notificationManager: NotificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        Log.d(logTag, "checkPermission: ${notificationManager.isNotificationPolicyAccessGranted}")
+        Log.d(TAG, "checkPermission: ${notificationManager.isNotificationPolicyAccessGranted}")
         return notificationManager.isNotificationPolicyAccessGranted
     }
 
@@ -73,7 +108,7 @@ class HomeActivity : AppCompatActivity() {
         if (!checkPermission()) {
 //            val requestPermissionLauncher =
 //                registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-//                    Log.d(logTag, "requestRequiredPermission: $isGranted")
+//                    Log.d(TAG, "requestRequiredPermission: $isGranted")
 //                }
 //            requestPermissionLauncher.launch(Manifest.permission.CAMERA)
             requestDNDPermission()
@@ -81,7 +116,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun requestDNDPermission() {
-//        Log.d(logTag, "requestDNDPermission Rationale: ${shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_NOTIFICATION_POLICY)}")
+//        Log.d(TAG, "requestDNDPermission Rationale: ${shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_NOTIFICATION_POLICY)}")
         val alertDialog: AlertDialog = let {
             val builder = AlertDialog.Builder(it)
             builder.apply {
@@ -92,14 +127,14 @@ class HomeActivity : AppCompatActivity() {
                     // above parameter(dialog,id)
                     // User clicked OK button
                     dialog.dismiss()
-                    Log.d(logTag, "dialogResult(): Yes")
+                    Log.d(TAG, "dialogResult(): Yes")
                     openDNDSettings()
                 }
                 setNegativeButton("No") { dialog, _ ->
                     // above parameter(dialog,id)
                     // User clicked No
                     dialog.dismiss()
-                    Log.d(logTag, "dialogResult(): No")
+                    Log.d(TAG, "dialogResult(): No")
                     finish()
                 }
                 setCancelable(false)

@@ -14,4 +14,20 @@
     <string name="log_out">Log Out</string>
     <string name="send_reset_link">Send reset link</string>
     <string name="settings">Settings</string>
+    <string name="home">Home</string>
+    <string name="priority">Priority</string>
+    <string name="location">Location</string>
+    <string name="not_yet_finished">Not yet finished</string>
+    <string name="dnd_on_off_description">DND On-Off</string>
+    <string name="total_silence">Total Silence</string>
+    <string name="priority_only">Priority Only</string>
+    <string name="calls_only">Calls Only</string>
+    <string name="duration">Duration</string>
+    <string name="description_time_slider">Slider to set time</string>
+
+    <string-array name="dnd_duration">
+        <item>Always</item>
+        <item>Time</item>
+        <item>Location</item>
+    </string-array>
 </resources>

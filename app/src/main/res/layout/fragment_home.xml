@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.fragment.HomeFragment">
+
+    <TextView
+        android:id="@+id/welcome_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/home"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/button_dnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_button"
+        android:contentDescription="@string/dnd_on_off_description"
+        android:padding="50dp"
+        android:scaleX="0.7"
+        android:scaleY="0.7"
+        android:src="@drawable/leaf_svgrepo_com"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/type_toggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/welcome_text"
+        app:materialThemeOverlay="@style/button_overlay"
+        app:selectionRequired="true"
+        app:singleSelection="true">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/total_silence_button"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/total_silence"
+            android:textColor="@color/light_green_700"
+            android:textStyle="bold"
+            app:rippleColor="@color/light_green_700"
+            app:strokeColor="@color/light_green_700" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/priority_only_button"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/priority_only"
+            android:textColor="@color/light_green_700"
+            android:textStyle="bold"
+            app:rippleColor="@color/light_green_700"
+            app:strokeColor="@color/light_green_700" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/calls_only_button"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/calls_only"
+            android:textColor="@color/light_green_700"
+            android:textStyle="bold"
+            app:rippleColor="@color/light_green_700"
+            app:strokeColor="@color/light_green_700" />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/duration_text_input_layout"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_registration"
+        android:hint="@string/duration"
+        app:hintTextColor="@color/light_green_700"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/type_toggle">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/duration_auto_complete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:textColor="@color/light_green_700"
+            app:simpleItems="@array/dnd_duration" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <include
+        android:id="@+id/layout_time"
+        layout="@layout/content_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_registration"
+        app:layout_constraintTop_toBottomOf="@id/duration_text_input_layout" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,6 +9,7 @@ import io.github.gouthams22.serenednd.R
 import io.github.gouthams22.serenednd.ui.adapter.LoginRegisterPagerAdapter
 
 class LoginRegisterActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login_register)

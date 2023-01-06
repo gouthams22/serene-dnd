@@ -14,8 +14,11 @@ import io.github.gouthams22.serenednd.R
 
 class ForgotPasswordActivity : AppCompatActivity() {
 
+    companion object {
+        private const val TAG = "ForgotPasswordActivity"
+    }
+
     private lateinit var firebaseAuth: FirebaseAuth
-    private val logTag = "ForgotPasswordActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,11 +37,11 @@ class ForgotPasswordActivity : AppCompatActivity() {
             // Locking email field and button to not be able to interact
             disableInput()
             if (isEmailValid(forgotEmailEditText.text?.trim().toString())) {
-                Log.d(logTag, "isEmailValid: true")
+                Log.d(TAG, "isEmailValid: true")
                 firebaseAuth.sendPasswordResetEmail(forgotEmailEditText.text?.trim().toString())
                     .addOnCompleteListener { task ->
                         Log.d(
-                            logTag,
+                            TAG,
                             "FirebaseAuth password reset task: " + task.isSuccessful.toString()
                         )
 

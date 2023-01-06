@@ -15,4 +15,8 @@
         <!-- Customize your theme here. -->
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
+
+    <style name="button_overlay">
+        <item name="colorSecondaryContainer">#5F689F38</item>
+    </style>
 </resources>
