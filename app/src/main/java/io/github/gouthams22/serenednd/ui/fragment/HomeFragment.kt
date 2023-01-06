@@ -22,6 +22,7 @@ import androidx.core.view.allViews
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.work.*
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.slider.Slider
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -32,6 +33,7 @@ import io.github.gouthams22.serenednd.R
 import io.github.gouthams22.serenednd.ui.activity.HomeActivity
 import io.github.gouthams22.serenednd.ui.receiver.DNDStateReceiver
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 /**
  * A simple [Fragment] subclass.
@@ -52,6 +54,8 @@ class HomeFragment : Fragment() {
         arrayListOf(R.id.total_silence_button, R.id.priority_only_button, R.id.calls_only_button)
     private val timeDivisions =
         arrayListOf("15 m", "30 m", "45 m", "1 h", "1 h 30 m", "2 h", "3 h", "4 h", "5 h", "6 h")
+    private val timeDivisionValueInMinutes =
+        arrayListOf<Long>(15, 30, 45, 60, 90, 120, 180, 240, 300, 360)
 
     private var currentType = "None"
     private var currentDuration = "Always"
@@ -59,12 +63,60 @@ class HomeFragment : Fragment() {
     private val offColorId = R.color.dnd_button_off
     private val Int.px: Int get() = (this * Resources.getSystem().displayMetrics.density).toInt()
 
+//    class TimeWorker(
+//        context: Context,
+//        workerParams: WorkerParameters
+//    ) : Worker(
+//        context,
+//        workerParams
+//    ) {
+//        private val currentContext = context
+//        override fun doWork(): Result {
+//            Log.d(TAG, "doWork: Doing Work")
+//            return try {
+//                val notificationManager: NotificationManager =
+//                    currentContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//                notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
+//                Result.success()
+//            } catch (e: Exception) {
+//                Log.e(TAG, "doWork: ${e.printStackTrace()}")
+//                Result.failure()
+//            }
+//        }
+//
+//    }
+
+    class TimeWorker(
+        appContext: Context,
+        params: WorkerParameters
+    ) : CoroutineWorker(appContext, params) {
+        private val currentContext = appContext
+        override suspend fun doWork(): Result {
+            Log.d(TAG, "doWork: Doing Work")
+            return try {
+                val notificationManager: NotificationManager =
+                    currentContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
+                Result.success()
+            } catch (e: Exception) {
+                Log.e(TAG, "doWork: ${e.printStackTrace()}")
+                Result.failure()
+            }
+        }
+
+        override suspend fun getForegroundInfo(): ForegroundInfo {
+            return super.getForegroundInfo()
+        }
+
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_home, container, false)
+        Log.d(TAG, "onCreateView: ${VERSION.SDK_INT}")
 
         // Initializing rootView
         rootView = view
@@ -78,9 +130,11 @@ class HomeFragment : Fragment() {
             view.context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         // Receiver to listen to the state of DND
-        dndStateReceiver = DNDStateReceiver()
-        // passing supportFragmentManager's last fragment(assuming it as HomeFragment) to Receiver
-        dndStateReceiver.setHomeFragment((view.context as HomeActivity).supportFragmentManager.fragments.last() as HomeFragment)
+        // Passing supportFragmentManager's last fragment(assuming it as HomeFragment) to Receiver
+        dndStateReceiver = DNDStateReceiver(
+            (view.context as HomeActivity).supportFragmentManager.fragments.last() as HomeFragment,
+            view
+        )
 
         val welcomeText: TextView = view.findViewById(R.id.welcome_text)
         welcomeText.text = firebaseAuth.currentUser?.email.toString()
@@ -92,6 +146,17 @@ class HomeFragment : Fragment() {
         timeSlider.stepSize = 1F
         timeSlider.value = 0F
         timeSlider.setLabelFormatter { value -> timeDivisions[value.toInt()] }
+        Log.d(TAG, "timeSlider: ${timeSlider.value}")
+        timeSlider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: Slider) {
+                return
+            }
+
+            override fun onStopTrackingTouch(slider: Slider) {
+                Log.d(TAG, "timeSlider: ${timeSlider.value}")
+            }
+
+        })
 
         // MaterialButtonToggleGroup
         val typeToggle: MaterialButtonToggleGroup = view.findViewById(R.id.type_toggle)
@@ -126,7 +191,7 @@ class HomeFragment : Fragment() {
                 // Time based DND
                 1 -> {
                     //TODO: Implement time
-                    timeRootView.visibility = View.VISIBLE
+                    setDurationPreferences(dndDuration[1])
                     Toast.makeText(view.context, dndDuration[1], Toast.LENGTH_SHORT).show()
                 }
                 // Location based DND
@@ -212,7 +277,7 @@ class HomeFragment : Fragment() {
             dndStateReceiver,
             IntentFilter(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED)
         )
-        setDndButtonColor()
+        updateDnd(rootView)
         Log.d(TAG, "onStart: DND state: ${notificationManager.currentInterruptionFilter}")
     }
 
@@ -222,22 +287,48 @@ class HomeFragment : Fragment() {
         rootView.context.unregisterReceiver(dndStateReceiver)
     }
 
+    private fun updateInputAccessibility(view: View, isEnabled: Boolean) {
+        view.findViewById<Slider>(R.id.time_slider).isEnabled = isEnabled
+        for (i in view.findViewById<MaterialButtonToggleGroup>(R.id.type_toggle).allViews) {
+            i.isEnabled = isEnabled
+        }
+        view.findViewById<TextInputLayout>(R.id.duration_text_input_layout).isEnabled = isEnabled
+    }
+
     private fun turnDndOn(view: View) {
         // TODO: Update DND based on preferences
         Log.d(TAG, "turnDndOn: turning on")
         // Disable Inputs
-        for (i in view.findViewById<MaterialButtonToggleGroup>(R.id.type_toggle).allViews) {
-            i.isEnabled = false
-        }
-        view.findViewById<TextInputLayout>(R.id.duration_text_input_layout).isEnabled = false
+        updateInputAccessibility(view, false)
         when (currentDuration) {
+            // Always
             dndDuration[0] ->
                 when (currentType) {
                     dndType[0] -> notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE)
                     dndType[1] -> notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY)
                     dndType[2] -> notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALARMS)
                 }
-            dndDuration[1] -> notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE)
+            // Time
+            dndDuration[1] -> {
+                when (currentType) {
+                    dndType[0] -> notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE)
+                    dndType[1] -> notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY)
+                    dndType[2] -> notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALARMS)
+                }
+
+                // Create Work Request for time based schedule
+                val timeWorkRequest: OneTimeWorkRequest =
+                    OneTimeWorkRequestBuilder<TimeWorker>()
+                        .setInitialDelay(
+                            timeDivisionValueInMinutes[view.findViewById<Slider>(R.id.time_slider).value.toInt()],
+                            TimeUnit.MINUTES
+                        )
+                        .addTag("serene_time").build()
+
+                // Add the request to WorkManager
+                WorkManager.getInstance(view.context).enqueue(timeWorkRequest)
+            }
+            // Location
             dndDuration[2] -> notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE)
         }
     }
@@ -246,10 +337,8 @@ class HomeFragment : Fragment() {
         // TODO: Update DND based on preferences
         Log.d(TAG, "turnDndOn: turning off")
         // Enable Inputs
-        for (i in view.findViewById<MaterialButtonToggleGroup>(R.id.type_toggle).allViews) {
-            i.isEnabled = true
-        }
-        view.findViewById<TextInputLayout>(R.id.duration_text_input_layout).isEnabled = true
+        updateInputAccessibility(view, true)
+        WorkManager.getInstance(view.context).cancelAllWorkByTag("serene_time")
         notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
     }
 
@@ -300,10 +389,12 @@ class HomeFragment : Fragment() {
         )
     }
 
-    fun setDndButtonColor() {
+    fun updateDnd(view: View) {
         if (isDndTurnedOn()) {
             setButtonStrokeColor(onColorId)
+            updateInputAccessibility(view, false)
         } else {
+            updateInputAccessibility(view, true)
             setButtonStrokeColor(offColorId)
         }
     }
