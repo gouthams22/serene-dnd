@@ -43,14 +43,28 @@ class HomeActivity : AppCompatActivity() {
 //        val color = SurfaceColors.SURFACE_1.getColor(this)
 //        window.statusBarColor = color
 
+        // Top app bar Menu layout
         val materialToolbar: MaterialToolbar = findViewById(R.id.home_toolbar)
 //        materialToolbar.background=color.toDrawable()
         materialToolbar.inflateMenu(R.menu.home_menu)
+        // Log out Menu Button
         materialToolbar.menu.findItem(R.id.logout_menu_item).setOnMenuItemClickListener {
+            Log.d(TAG, "onCreate: Log out Button clicked")
+            it.isEnabled = false
             firebaseAuth.signOut()
             Log.d(TAG, if (firebaseAuth.currentUser != null) "Still signed in" else "Nope")
             startActivity(Intent(this, MainActivity::class.java))
             finish()
+            it.isEnabled = true
+            true
+        }
+        // Settings Menu Button
+        val settingsMenuItem = materialToolbar.menu.findItem(R.id.settings_menu_item)
+        settingsMenuItem.setOnMenuItemClickListener {
+            Log.d(TAG, "onCreate: Settings Button clicked")
+            it.isEnabled = false
+            startActivity(Intent(applicationContext, SettingsActivity::class.java))
+            it.isEnabled = true
             true
         }
 

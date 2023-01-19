@@ -28,8 +28,8 @@ import com.google.android.material.slider.Slider
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
-import io.github.gouthams22.serenednd.DNDPreference
 import io.github.gouthams22.serenednd.R
+import io.github.gouthams22.serenednd.preferences.DNDPreference
 import io.github.gouthams22.serenednd.ui.activity.HomeActivity
 import io.github.gouthams22.serenednd.ui.receiver.DNDStateReceiver
 import kotlinx.coroutines.launch
@@ -62,29 +62,6 @@ class HomeFragment : Fragment() {
     private val onColorId = R.color.dnd_button_on
     private val offColorId = R.color.dnd_button_off
     private val Int.px: Int get() = (this * Resources.getSystem().displayMetrics.density).toInt()
-
-//    class TimeWorker(
-//        context: Context,
-//        workerParams: WorkerParameters
-//    ) : Worker(
-//        context,
-//        workerParams
-//    ) {
-//        private val currentContext = context
-//        override fun doWork(): Result {
-//            Log.d(TAG, "doWork: Doing Work")
-//            return try {
-//                val notificationManager: NotificationManager =
-//                    currentContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//                notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
-//                Result.success()
-//            } catch (e: Exception) {
-//                Log.e(TAG, "doWork: ${e.printStackTrace()}")
-//                Result.failure()
-//            }
-//        }
-//
-//    }
 
     class TimeWorker(
         appContext: Context,
@@ -137,7 +114,8 @@ class HomeFragment : Fragment() {
         )
 
         val welcomeText: TextView = view.findViewById(R.id.welcome_text)
-        welcomeText.text = firebaseAuth.currentUser?.email.toString()
+//        welcomeText.text = firebaseAuth.currentUser?.email.toString()
+        Log.d(TAG, "onCreateView: ${firebaseAuth.currentUser != null}")
 
         val timeRootView: ConstraintLayout = view.findViewById(R.id.layout_time)
         val timeSlider: Slider = view.findViewById(R.id.time_slider)
