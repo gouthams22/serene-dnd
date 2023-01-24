@@ -6,9 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".ui.activity.SettingsActivity">
 
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/settings_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:fitsSystemWindows="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="@string/settings" />
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/settings_fragment_container"
-        tools:layout="@layout/content_time"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/settings_toolbar"
+        tools:layout="@layout/content_time" />
 </androidx.constraintlayout.widget.ConstraintLayout>

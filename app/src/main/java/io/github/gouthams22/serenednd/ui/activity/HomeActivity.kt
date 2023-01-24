@@ -9,14 +9,18 @@ import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import io.github.gouthams22.serenednd.R
+import io.github.gouthams22.serenednd.preferences.SettingsPreferences
 import io.github.gouthams22.serenednd.ui.fragment.HomeFragment
 import io.github.gouthams22.serenednd.ui.fragment.LocationFragment
 import io.github.gouthams22.serenednd.ui.fragment.PriorityFragment
+import kotlinx.coroutines.launch
 
 class HomeActivity : AppCompatActivity() {
 
@@ -109,6 +113,17 @@ class HomeActivity : AppCompatActivity() {
         }
         // Setting default view when activity is opened
         bottomNavigationView.selectedItemId = R.id.home
+
+        // App Night mode
+        setNightMode()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // If no user present, return to get started page
+        redirectIfNoUser()
+        requestRequiredPermission()
+
     }
 
     private fun checkPermission(): Boolean {
@@ -120,17 +135,11 @@ class HomeActivity : AppCompatActivity() {
 
     private fun requestRequiredPermission() {
         if (!checkPermission()) {
-//            val requestPermissionLauncher =
-//                registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-//                    Log.d(TAG, "requestRequiredPermission: $isGranted")
-//                }
-//            requestPermissionLauncher.launch(Manifest.permission.CAMERA)
             requestDNDPermission()
         }
     }
 
     private fun requestDNDPermission() {
-//        Log.d(TAG, "requestDNDPermission Rationale: ${shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_NOTIFICATION_POLICY)}")
         val alertDialog: AlertDialog = let {
             val builder = AlertDialog.Builder(it)
             builder.apply {
@@ -166,17 +175,21 @@ class HomeActivity : AppCompatActivity() {
         requestDNDSettingsActivityResultLauncher.launch(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
     }
 
-    override fun onResume() {
-        super.onResume()
-        // If no user present, return to get started page
-        redirectIfNoUser()
-        requestRequiredPermission()
-    }
-
     private fun redirectIfNoUser() {
         if (firebaseAuth.currentUser == null) {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
+    }
+
+    private fun setNightMode() {
+        val settingsPreferences = SettingsPreferences(lifecycleScope, applicationContext)
+        lifecycleScope
+            .launch {
+                AppCompatDelegate.setDefaultNightMode(settingsPreferences.getTheme().toInt())
+            }
+            .invokeOnCompletion {
+                Log.d(TAG, "setNightMode: ${it?.stackTrace ?: "Completed"}")
+            }
     }
 }
