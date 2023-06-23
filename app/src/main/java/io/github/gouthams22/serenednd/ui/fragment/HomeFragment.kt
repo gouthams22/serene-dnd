@@ -15,14 +15,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.allViews
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
-import androidx.work.*
+import androidx.work.CoroutineWorker
+import androidx.work.ForegroundInfo
+import androidx.work.OneTimeWorkRequest
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkerParameters
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.slider.Slider
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -92,7 +96,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_home, container, false)
+        val view:View = inflater.inflate(R.layout.fragment_home, container, false)
         Log.d(TAG, "onCreateView: ${VERSION.SDK_INT}")
 
         // Initializing rootView
@@ -113,7 +117,7 @@ class HomeFragment : Fragment() {
             view
         )
 
-        val welcomeText: TextView = view.findViewById(R.id.welcome_text)
+//        val welcomeText: TextView = view.findViewById(R.id.welcome_text)
 //        welcomeText.text = firebaseAuth.currentUser?.email.toString()
         Log.d(TAG, "onCreateView: ${firebaseAuth.currentUser != null}")
 
