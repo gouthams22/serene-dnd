@@ -14,8 +14,6 @@
         android:fitsSystemWindows="true"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- TODO: Design Home page -->
-
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/home_fragment_container_view"
         android:layout_width="match_parent"
