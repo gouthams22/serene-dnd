@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/item_anyone"
+        android:title="@string/from_anyone" />
+    <item
+        android:id="@+id/item_contacts"
+        android:title="@string/from_contacts" />
+    <item
+        android:id="@+id/item_starred"
+        android:title="@string/from_starred_contacts" />
+    <item
+        android:id="@+id/item_none"
+        android:title="@string/none" />
+</menu>

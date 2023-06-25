@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_conversations_all"
+        android:title="@string/all_conversations" />
+    <item
+        android:id="@+id/menu_conversations_priority"
+        android:title="@string/priority_conversations" />
+    <item
+        android:id="@+id/menu_conversations_none"
+        android:title="@string/none" />
+</menu>
