@@ -91,6 +91,7 @@ class HomeActivity : AppCompatActivity() {
                         .commit()
                     true
                 }
+
                 R.id.priority -> {
                     Log.d(TAG, "navbar: ${getString(R.string.priority)}")
                     supportFragmentManager.beginTransaction()
@@ -98,6 +99,7 @@ class HomeActivity : AppCompatActivity() {
                         .commit()
                     true
                 }
+
                 R.id.location -> {
                     Log.d(TAG, "navbar: ${getString(R.string.location)}")
                     supportFragmentManager.beginTransaction()
@@ -105,6 +107,7 @@ class HomeActivity : AppCompatActivity() {
                         .commit()
                     true
                 }
+
                 else -> {
                     Log.d(TAG, "navbar: False")
                     false
