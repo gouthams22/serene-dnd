@@ -96,7 +96,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view:View = inflater.inflate(R.layout.fragment_home, container, false)
+        val view: View = inflater.inflate(R.layout.fragment_home, container, false)
         Log.d(TAG, "onCreateView: ${VERSION.SDK_INT}")
 
         // Initializing rootView
@@ -117,8 +117,6 @@ class HomeFragment : Fragment() {
             view
         )
 
-//        val welcomeText: TextView = view.findViewById(R.id.welcome_text)
-//        welcomeText.text = firebaseAuth.currentUser?.email.toString()
         Log.d(TAG, "onCreateView: ${firebaseAuth.currentUser != null}")
 
         val timeRootView: ConstraintLayout = view.findViewById(R.id.layout_time)
@@ -149,9 +147,11 @@ class HomeFragment : Fragment() {
                     dndTypeId[0] -> {
                         setTypePreferences(dndType[0])
                     }
+
                     dndTypeId[1] -> {
                         setTypePreferences(dndType[1])
                     }
+
                     dndTypeId[2] -> {
                         setTypePreferences(dndType[2])
                     }
@@ -166,13 +166,11 @@ class HomeFragment : Fragment() {
             when (position) {
                 // Always
                 0 -> {
-                    //TODO: Implement none
                     setDurationPreferences(dndDuration[0])
                     Toast.makeText(view.context, dndDuration[0], Toast.LENGTH_SHORT).show()
                 }
                 // Time based DND
                 1 -> {
-                    //TODO: Implement time
                     setDurationPreferences(dndDuration[1])
                     Toast.makeText(view.context, dndDuration[1], Toast.LENGTH_SHORT).show()
                 }
@@ -209,9 +207,11 @@ class HomeFragment : Fragment() {
                 dndType[0] ->
                     if (typeToggle.checkedButtonId != dndTypeId[0])
                         typeToggle.check(dndTypeId[0])
+
                 dndType[1] ->
                     if (typeToggle.checkedButtonId != dndTypeId[1])
                         typeToggle.check(dndTypeId[1])
+
                 dndType[2] ->
                     if (typeToggle.checkedButtonId != dndTypeId[2])
                         typeToggle.check(dndTypeId[2])
