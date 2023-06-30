@@ -9,6 +9,12 @@
         android:title="@string/settings"
         app:showAsAction="collapseActionView" />
     <item
+        android:id="@+id/about_menu_item"
+        android:icon="@drawable/ic_outline_info_24"
+        android:menuCategory="system"
+        android:title="@string/about"
+        app:showAsAction="collapseActionView" />
+    <item
         android:id="@+id/logout_menu_item"
         android:icon="@drawable/ic_outline_logout_24"
         android:title="@string/log_out"
