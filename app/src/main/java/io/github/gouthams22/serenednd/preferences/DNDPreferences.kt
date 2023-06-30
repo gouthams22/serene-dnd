@@ -1,4 +1,4 @@
-package io.github.gouthams22.serenednd
+package io.github.gouthams22.serenednd.preferences
 
 import android.content.Context
 import androidx.datastore.core.DataStore

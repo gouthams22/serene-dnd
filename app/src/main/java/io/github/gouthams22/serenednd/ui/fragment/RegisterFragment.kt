@@ -26,10 +26,6 @@ class RegisterFragment : Fragment() {
     // Firebase Authentication
     private lateinit var firebaseAuth: FirebaseAuth
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,7 +47,7 @@ class RegisterFragment : Fragment() {
         firebaseAuth = FirebaseAuth.getInstance()
 
         //Checking if "Confirm password" and "password" are equal
-        regConfirmPasswordField.doOnTextChanged { text, start, before, count ->
+        regConfirmPasswordField.doOnTextChanged { text, _, _, _ ->
             regConfirmPasswordField.error =
                 if (text.toString() == regPasswordField.text.toString()) null else "Passwords doesn't match"
         }

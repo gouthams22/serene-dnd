@@ -16,17 +16,6 @@ class DNDStateReceiver(_homeFragment: HomeFragment, _homeFragmentView: View) : B
     private val homeFragment = _homeFragment
     private val homeFragmentView = _homeFragmentView
 
-    //    private lateinit var homeFragment: HomeFragment
-//    private lateinit var homeFragmentView: View
-//
-//    fun setHomeFragment(fragment: HomeFragment) {
-//        homeFragment = fragment
-//    }
-//
-//    fun setHomeFragmentView(view: View) {
-//        homeFragmentView = view
-//    }
-
     override fun onReceive(context: Context?, intent: Intent?) {
         val isDndStateChanged: Boolean =
             intent?.action.equals(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED)

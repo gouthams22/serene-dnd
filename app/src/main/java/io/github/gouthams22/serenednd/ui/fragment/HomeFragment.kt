@@ -15,21 +15,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.allViews
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
-import androidx.work.*
+import androidx.work.CoroutineWorker
+import androidx.work.ForegroundInfo
+import androidx.work.OneTimeWorkRequest
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkerParameters
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.slider.Slider
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
-import io.github.gouthams22.serenednd.DNDPreference
 import io.github.gouthams22.serenednd.R
+import io.github.gouthams22.serenednd.preferences.DNDPreference
 import io.github.gouthams22.serenednd.ui.activity.HomeActivity
 import io.github.gouthams22.serenednd.ui.receiver.DNDStateReceiver
 import kotlinx.coroutines.launch
@@ -63,29 +67,6 @@ class HomeFragment : Fragment() {
     private val offColorId = R.color.dnd_button_off
     private val Int.px: Int get() = (this * Resources.getSystem().displayMetrics.density).toInt()
 
-//    class TimeWorker(
-//        context: Context,
-//        workerParams: WorkerParameters
-//    ) : Worker(
-//        context,
-//        workerParams
-//    ) {
-//        private val currentContext = context
-//        override fun doWork(): Result {
-//            Log.d(TAG, "doWork: Doing Work")
-//            return try {
-//                val notificationManager: NotificationManager =
-//                    currentContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//                notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
-//                Result.success()
-//            } catch (e: Exception) {
-//                Log.e(TAG, "doWork: ${e.printStackTrace()}")
-//                Result.failure()
-//            }
-//        }
-//
-//    }
-
     class TimeWorker(
         appContext: Context,
         params: WorkerParameters
@@ -115,7 +96,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_home, container, false)
+        val view: View = inflater.inflate(R.layout.fragment_home, container, false)
         Log.d(TAG, "onCreateView: ${VERSION.SDK_INT}")
 
         // Initializing rootView
@@ -136,8 +117,7 @@ class HomeFragment : Fragment() {
             view
         )
 
-        val welcomeText: TextView = view.findViewById(R.id.welcome_text)
-        welcomeText.text = firebaseAuth.currentUser?.email.toString()
+        Log.d(TAG, "onCreateView: ${firebaseAuth.currentUser != null}")
 
         val timeRootView: ConstraintLayout = view.findViewById(R.id.layout_time)
         val timeSlider: Slider = view.findViewById(R.id.time_slider)
@@ -167,9 +147,11 @@ class HomeFragment : Fragment() {
                     dndTypeId[0] -> {
                         setTypePreferences(dndType[0])
                     }
+
                     dndTypeId[1] -> {
                         setTypePreferences(dndType[1])
                     }
+
                     dndTypeId[2] -> {
                         setTypePreferences(dndType[2])
                     }
@@ -184,13 +166,11 @@ class HomeFragment : Fragment() {
             when (position) {
                 // Always
                 0 -> {
-                    //TODO: Implement none
                     setDurationPreferences(dndDuration[0])
                     Toast.makeText(view.context, dndDuration[0], Toast.LENGTH_SHORT).show()
                 }
                 // Time based DND
                 1 -> {
-                    //TODO: Implement time
                     setDurationPreferences(dndDuration[1])
                     Toast.makeText(view.context, dndDuration[1], Toast.LENGTH_SHORT).show()
                 }
@@ -227,9 +207,11 @@ class HomeFragment : Fragment() {
                 dndType[0] ->
                     if (typeToggle.checkedButtonId != dndTypeId[0])
                         typeToggle.check(dndTypeId[0])
+
                 dndType[1] ->
                     if (typeToggle.checkedButtonId != dndTypeId[1])
                         typeToggle.check(dndTypeId[1])
+
                 dndType[2] ->
                     if (typeToggle.checkedButtonId != dndTypeId[2])
                         typeToggle.check(dndTypeId[2])

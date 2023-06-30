@@ -14,14 +14,17 @@
     <string name="log_out">Log Out</string>
     <string name="send_reset_link">Send reset link</string>
     <string name="settings">Settings</string>
+
     <string name="home">Home</string>
     <string name="priority">Priority</string>
     <string name="location">Location</string>
     <string name="not_yet_finished">Not yet finished</string>
     <string name="dnd_on_off_description">DND On-Off</string>
+
     <string name="total_silence">Total Silence</string>
     <string name="priority_only">Priority Only</string>
     <string name="calls_only">Calls Only</string>
+
     <string name="duration">Duration</string>
     <string name="description_time_slider">Slider to set time</string>
 
@@ -30,4 +33,29 @@
         <item>Time</item>
         <item>Location</item>
     </string-array>
+
+    <string name="priority_header">Priority only allows the following</string>
+    <string name="reminders">Reminders</string>
+    <string name="events">Events</string>
+    <string name="alarms">Alarms</string>
+    <string name="messages">Messages</string>
+    <string name="calls">Calls</string>
+    <string name="conversations">Conversations</string>
+    <string name="media_sounds">Media sounds</string>
+    <string name="system_sounds">System sounds</string>
+
+
+    <string name="from_anyone">From anyone</string>
+    <string name="from_contacts">From contacts only</string>
+    <string name="from_starred_contacts">From starred contacts only</string>
+    <string name="none">None</string>
+    <string name="all_conversations">All conversations</string>
+    <string name="priority_conversations">Priority conversations</string>
+
+    <string-array name="night_mode_theme">
+        <item>Light</item>
+        <item>Dark</item>
+        <item>System default</item>
+    </string-array>
+
 </resources>

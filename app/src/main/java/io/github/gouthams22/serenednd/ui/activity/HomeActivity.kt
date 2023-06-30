@@ -9,14 +9,18 @@ import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import io.github.gouthams22.serenednd.R
+import io.github.gouthams22.serenednd.preferences.SettingsPreferences
 import io.github.gouthams22.serenednd.ui.fragment.HomeFragment
 import io.github.gouthams22.serenednd.ui.fragment.LocationFragment
 import io.github.gouthams22.serenednd.ui.fragment.PriorityFragment
+import kotlinx.coroutines.launch
 
 class HomeActivity : AppCompatActivity() {
 
@@ -43,14 +47,28 @@ class HomeActivity : AppCompatActivity() {
 //        val color = SurfaceColors.SURFACE_1.getColor(this)
 //        window.statusBarColor = color
 
+        // Top app bar Menu layout
         val materialToolbar: MaterialToolbar = findViewById(R.id.home_toolbar)
 //        materialToolbar.background=color.toDrawable()
         materialToolbar.inflateMenu(R.menu.home_menu)
+        // Log out Menu Button
         materialToolbar.menu.findItem(R.id.logout_menu_item).setOnMenuItemClickListener {
+            Log.d(TAG, "onCreate: Log out Button clicked")
+            it.isEnabled = false
             firebaseAuth.signOut()
             Log.d(TAG, if (firebaseAuth.currentUser != null) "Still signed in" else "Nope")
             startActivity(Intent(this, MainActivity::class.java))
             finish()
+            it.isEnabled = true
+            true
+        }
+        // Settings Menu Button
+        val settingsMenuItem = materialToolbar.menu.findItem(R.id.settings_menu_item)
+        settingsMenuItem.setOnMenuItemClickListener {
+            Log.d(TAG, "onCreate: Settings Button clicked")
+            it.isEnabled = false
+            startActivity(Intent(applicationContext, SettingsActivity::class.java))
+            it.isEnabled = true
             true
         }
 
@@ -73,6 +91,7 @@ class HomeActivity : AppCompatActivity() {
                         .commit()
                     true
                 }
+
                 R.id.priority -> {
                     Log.d(TAG, "navbar: ${getString(R.string.priority)}")
                     supportFragmentManager.beginTransaction()
@@ -80,6 +99,7 @@ class HomeActivity : AppCompatActivity() {
                         .commit()
                     true
                 }
+
                 R.id.location -> {
                     Log.d(TAG, "navbar: ${getString(R.string.location)}")
                     supportFragmentManager.beginTransaction()
@@ -87,6 +107,7 @@ class HomeActivity : AppCompatActivity() {
                         .commit()
                     true
                 }
+
                 else -> {
                     Log.d(TAG, "navbar: False")
                     false
@@ -95,6 +116,17 @@ class HomeActivity : AppCompatActivity() {
         }
         // Setting default view when activity is opened
         bottomNavigationView.selectedItemId = R.id.home
+
+        // App Night mode
+        setNightMode()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // If no user present, return to get started page
+        redirectIfNoUser()
+        requestRequiredPermission()
+
     }
 
     private fun checkPermission(): Boolean {
@@ -106,17 +138,11 @@ class HomeActivity : AppCompatActivity() {
 
     private fun requestRequiredPermission() {
         if (!checkPermission()) {
-//            val requestPermissionLauncher =
-//                registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-//                    Log.d(TAG, "requestRequiredPermission: $isGranted")
-//                }
-//            requestPermissionLauncher.launch(Manifest.permission.CAMERA)
             requestDNDPermission()
         }
     }
 
     private fun requestDNDPermission() {
-//        Log.d(TAG, "requestDNDPermission Rationale: ${shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_NOTIFICATION_POLICY)}")
         val alertDialog: AlertDialog = let {
             val builder = AlertDialog.Builder(it)
             builder.apply {
@@ -152,17 +178,21 @@ class HomeActivity : AppCompatActivity() {
         requestDNDSettingsActivityResultLauncher.launch(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
     }
 
-    override fun onResume() {
-        super.onResume()
-        // If no user present, return to get started page
-        redirectIfNoUser()
-        requestRequiredPermission()
-    }
-
     private fun redirectIfNoUser() {
         if (firebaseAuth.currentUser == null) {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
+    }
+
+    private fun setNightMode() {
+        val settingsPreferences = SettingsPreferences(lifecycleScope, applicationContext)
+        lifecycleScope
+            .launch {
+                AppCompatDelegate.setDefaultNightMode(settingsPreferences.getTheme().toInt())
+            }
+            .invokeOnCompletion {
+                Log.d(TAG, "setNightMode: ${it?.stackTrace ?: "Completed"}")
+            }
     }
 }
