@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import io.github.gouthams22.serenednd.AboutActivity
 import io.github.gouthams22.serenednd.R
 import io.github.gouthams22.serenednd.preferences.SettingsPreferences
 import io.github.gouthams22.serenednd.ui.fragment.HomeFragment
@@ -63,11 +64,18 @@ class HomeActivity : AppCompatActivity() {
             true
         }
         // Settings Menu Button
-        val settingsMenuItem = materialToolbar.menu.findItem(R.id.settings_menu_item)
-        settingsMenuItem.setOnMenuItemClickListener {
+        materialToolbar.menu.findItem(R.id.settings_menu_item).setOnMenuItemClickListener {
             Log.d(TAG, "onCreate: Settings Button clicked")
             it.isEnabled = false
             startActivity(Intent(applicationContext, SettingsActivity::class.java))
+            it.isEnabled = true
+            true
+        }
+        //About Menu Button
+        materialToolbar.menu.findItem(R.id.about_menu_item).setOnMenuItemClickListener {
+            Log.d(TAG, "onCreate: About Button clicked")
+            it.isEnabled = false
+            startActivity(Intent(applicationContext, AboutActivity::class.java))
             it.isEnabled = true
             true
         }
