@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AboutActivity">
-
-    <!--  TODO: Logo Image clipToOutline only supports v31+, implement for v31-  -->
+    tools:context=".ui.activity.AboutActivity">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -34,15 +32,13 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
+            <!--  Different implementation of round cornered rectangle image on pre and post api v31  -->
+            <include
                 android:id="@+id/image_app_logo"
+                layout="@layout/round_corner_app_logo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="24dp"
-                android:background="@drawable/round_corner_image"
-                android:clipToOutline="true"
-                android:contentDescription="@string/app_logo"
-                android:src="@mipmap/ic_launcher"
                 app:layout_constraintEnd_toStartOf="@id/textview_app_name"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

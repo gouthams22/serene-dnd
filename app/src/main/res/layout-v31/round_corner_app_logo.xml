@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/image_app_logo"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/round_corner_image"
+    android:clipToOutline="true"
+    android:contentDescription="@string/app_logo"
+    android:src="@mipmap/ic_launcher" />
