@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textview.MaterialTextView
 import io.github.gouthams22.serenednd.BuildConfig
 import io.github.gouthams22.serenednd.R
+import io.github.gouthams22.serenednd.SereneCustomTabs
 
 /*
 Tasks:
@@ -24,39 +25,45 @@ class AboutActivity : AppCompatActivity() {
         findViewById<MaterialTextView>(R.id.text_version_name).text = BuildConfig.VERSION_NAME
 
         findViewById<ImageView>(R.id.logo_github).setOnClickListener {
+            it.isEnabled = false
             openLink(gitHubLink)
+            it.isEnabled = true
         }
 
         findViewById<ImageView>(R.id.logo_linkedin).setOnClickListener {
+            it.isEnabled = false
             openLink(linkedInLink)
+            it.isEnabled = true
         }
 
         findViewById<ImageView>(R.id.logo_mail).setOnClickListener {
+            it.isEnabled = false
             openLink(developerMailId, true)
-
+            it.isEnabled = true
         }
-
     }
 
+    /**
+     * Handles links appropriately
+     * @param url Url of the website/mail to launch
+     * @param isMailId whether the given url is a mail id or not
+     */
     private fun openLink(url: String, isMailId: Boolean = false) {
-        Log.d(TAG, "openLink: $url isvalidHttps? ${URLUtil.isHttpsUrl(url)}")
-        val intent: Intent =
-            if (isMailId) {
+        Log.d(TAG, "openLink: $url isValidHttpsUrl? ${URLUtil.isHttpsUrl(url)}")
+        if (isMailId) {
+            val mailIntent =
                 Intent(Intent.ACTION_SENDTO).apply {
                     data = Uri.parse("mailto:")
                     putExtra(Intent.EXTRA_EMAIL, arrayOf(developerMailId))
                     putExtra(Intent.EXTRA_SUBJECT, "Serene DND Feedback")
                 }
-            } else {
-                if (URLUtil.isHttpsUrl(url)) {
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse(url)
-                    )
-                } else Intent()
+            if (mailIntent.resolveActivity(packageManager) != null) {
+                startActivity(mailIntent)
             }
-        if (intent.resolveActivity(packageManager) != null) {
-            startActivity(intent)
+        } else {
+            if (URLUtil.isHttpsUrl(url)) {
+                SereneCustomTabs(this).launchUrl(url)
+            }
         }
     }
 
