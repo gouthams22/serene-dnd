@@ -15,7 +15,6 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
-import io.github.gouthams22.serenednd.AboutActivity
 import io.github.gouthams22.serenednd.R
 import io.github.gouthams22.serenednd.preferences.SettingsPreferences
 import io.github.gouthams22.serenednd.ui.fragment.HomeFragment

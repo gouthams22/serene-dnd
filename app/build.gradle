@@ -62,7 +62,7 @@ dependencies {
     // Firebase Authentication library
     implementation 'com.google.firebase:firebase-auth-ktx'
     // Dependency for the Google Play services library and its version
-    implementation 'com.google.android.gms:play-services-auth:20.5.0'
+    implementation 'com.google.android.gms:play-services-auth:20.6.0'
     // Data Store Preferences
     implementation "androidx.datastore:datastore-preferences:1.0.0"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.1"
