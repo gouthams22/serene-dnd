@@ -488,6 +488,7 @@ class PriorityFragment : Fragment() {
 
         /**
          * Updates the notification policy by setting a new policy
+         * @param notificationManager Notification Manager
          */
         fun updateNotificationPolicy(
             notificationManager: NotificationManager

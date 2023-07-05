@@ -341,7 +341,7 @@ class HomeFragment : Fragment() {
 
     /**
      * Function to change the stroke color of dnd button
-     * @param colorId: Id of color to be assigned to dnd button
+     * @param colorId Id of color to be assigned to dnd button
      */
     private fun setButtonStrokeColor(colorId: Int) {
         Log.d(TAG, "setButtonStrokeColor: $colorId")
@@ -356,7 +356,7 @@ class HomeFragment : Fragment() {
 
     /**
      * Function to change the solid color of dnd button
-     * @param colorId: Id of color to be assigned to dnd button
+     * @param colorId Id of color to be assigned to dnd button
      */
     private fun setButtonSolidColor(colorId: Int) {
         Log.d(TAG, "setButtonSolidColor: $colorId")
