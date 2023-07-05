@@ -24,7 +24,6 @@ class AboutActivity : AppCompatActivity() {
         findViewById<MaterialTextView>(R.id.text_version_name).text = BuildConfig.VERSION_NAME
 
         findViewById<ImageView>(R.id.logo_github).setOnClickListener {
-            //TODO: Implement GitHub
             openLink(gitHubLink)
         }
 
@@ -45,7 +44,7 @@ class AboutActivity : AppCompatActivity() {
             if (isMailId) {
                 Intent(Intent.ACTION_SENDTO).apply {
                     data = Uri.parse("mailto:")
-                    putExtra(Intent.EXTRA_EMAIL, developerMailId)
+                    putExtra(Intent.EXTRA_EMAIL, arrayOf(developerMailId))
                     putExtra(Intent.EXTRA_SUBJECT, "Serene DND Feedback")
                 }
             } else {
@@ -56,7 +55,6 @@ class AboutActivity : AppCompatActivity() {
                     )
                 } else Intent()
             }
-        //TODO resolve activity not working
         if (intent.resolveActivity(packageManager) != null) {
             startActivity(intent)
         }
