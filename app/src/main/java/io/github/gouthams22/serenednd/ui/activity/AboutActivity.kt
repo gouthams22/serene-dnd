@@ -7,6 +7,9 @@ import android.util.Log
 import android.webkit.URLUtil
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.lifecycleScope
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.textview.MaterialTextView
 import io.github.gouthams22.serenednd.BuildConfig
 import io.github.gouthams22.serenednd.R
@@ -22,7 +25,18 @@ class AboutActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
 
-        findViewById<MaterialTextView>(R.id.text_version_name).text = BuildConfig.VERSION_NAME
+        val aboutToolbar: MaterialToolbar = findViewById(R.id.about_toolbar)
+        // Set back button
+        aboutToolbar.navigationIcon =
+            ResourcesCompat.getDrawable(resources, R.drawable.ic_outline_arrow_back_24, theme)
+        aboutToolbar.setNavigationOnClickListener {
+            finish()
+        }
+
+        // Set current version to version TextView
+        "v${BuildConfig.VERSION_NAME}".also {
+            findViewById<MaterialTextView>(R.id.text_version_name).text = it
+        }
 
         findViewById<ImageView>(R.id.logo_github).setOnClickListener {
             it.isEnabled = false
@@ -50,7 +64,9 @@ class AboutActivity : AppCompatActivity() {
      */
     private fun openLink(url: String, isMailId: Boolean = false) {
         Log.d(TAG, "openLink: $url isValidHttpsUrl? ${URLUtil.isHttpsUrl(url)}")
+
         if (isMailId) {
+            // Mail intent
             val mailIntent =
                 Intent(Intent.ACTION_SENDTO).apply {
                     data = Uri.parse("mailto:")
@@ -61,8 +77,9 @@ class AboutActivity : AppCompatActivity() {
                 startActivity(mailIntent)
             }
         } else {
+            // Custom Tabs intent
             if (URLUtil.isHttpsUrl(url)) {
-                SereneCustomTabs(this).launchUrl(url)
+                SereneCustomTabs(this).launchUrl(url, lifecycleScope)
             }
         }
     }

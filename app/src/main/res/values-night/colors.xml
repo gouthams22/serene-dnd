@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="get_started_background">#331606</color>
-    <color name="get_started_button">#e64a19</color>
+    <color name="get_started_background">@color/teal_700</color>
+    <color name="get_started_button">#FFDEC5</color>
+    <color name="get_started_text">#E38F52</color>
     <color name="login_register_tab_color_indicator">@color/cyan_dark</color>
     <color name="google_background">#757575</color>
     <color name="google_text">#ffffff</color>

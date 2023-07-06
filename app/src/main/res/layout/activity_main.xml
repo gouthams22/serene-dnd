@@ -38,7 +38,7 @@
         android:padding="16dp"
         android:text="@string/get_started"
         android:textAllCaps="true"
-        android:textColor="@color/get_started_background"
+        android:textColor="@color/get_started_text"
         android:textSize="@dimen/text_size_16"
         android:textStyle="bold"
         app:cornerRadius="16dp"
