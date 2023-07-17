@@ -46,7 +46,6 @@
     <string name="media_sounds">Media sounds</string>
     <string name="system_sounds">System sounds</string>
 
-
     <string name="from_anyone">From anyone</string>
     <string name="from_contacts">From contacts only</string>
     <string name="from_starred_contacts">From starred contacts only</string>
@@ -59,6 +58,9 @@
         <item>Dark</item>
         <item>System default</item>
     </string-array>
+
+    <string name="user_profile_picture">User profile picture</string>
+    <string name="sample_mail_text">abcdef@ghij.klm</string>
 
     <string name="developer_name">Goutham Subramani</string>
     <string name="mail">Mail</string>
