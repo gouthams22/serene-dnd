@@ -68,4 +68,9 @@
     <string name="linkedin">LinkedIn</string>
     <string name="sample_version_value">1.0.0</string>
 
+    <string name="edit_location">Edit location</string>
+    <string name="delete_location">Delete location</string>
+    <string name="placeholder_number">1</string>
+    <string name="placeholder_coordinates">10.78260276347789, 79.13114119482583</string>
+
 </resources>
