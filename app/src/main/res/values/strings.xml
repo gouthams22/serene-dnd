@@ -65,5 +65,7 @@
     <string name="github">GitHub</string>
     <string name="linkedin">LinkedIn</string>
     <string name="sample_version_value">1.0.0</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="open_source_licenses">Open source licenses</string>
 
 </resources>

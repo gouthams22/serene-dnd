@@ -32,4 +32,5 @@
     <color name="light_green_700">#689F38</color>
     <color name="dnd_button_on">@android:color/holo_green_dark</color>
     <color name="dnd_button_off">@android:color/holo_red_dark</color>
+    <color name="pure_night_mode">#ffffff</color>
 </resources>

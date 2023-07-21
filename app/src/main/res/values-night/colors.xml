@@ -6,4 +6,5 @@
     <color name="login_register_tab_color_indicator">@color/cyan_dark</color>
     <color name="google_background">#757575</color>
     <color name="google_text">#ffffff</color>
+    <color name="pure_night_mode">#000000</color>
 </resources>
