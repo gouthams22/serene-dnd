@@ -300,6 +300,7 @@ class AboutActivity : AppCompatActivity() {
                 "        </p>\n" +
                 "    </body>\n" +
                 "</html>"
+//        var content: String = resources.getString(R.string.privacy_policy_txt)
 
         // Splits content string into array list
         while (content.isNotBlank() && content.isNotEmpty()) {
@@ -340,24 +341,39 @@ class AboutActivity : AppCompatActivity() {
             }
 
             flagState[1] -> {
-                setRecyclerView(policyList, false)
-                flagState[0]
+                if (findViewById<RecyclerView>(R.id.recycler_view_about).visibility == View.VISIBLE)
+                    setRecyclerView(policyList, false)
+                else
+                    setRecyclerView(policyList, isVisible = true, changeList = false)
+                flagState[1]
             }
 
             else -> flagState[0]
         }
     }
 
+//    private fun setOpenSource(flag: String): String {
+//        //TODO implement open source
+//        val content: String = ""
+//
+//        return flagState[0]
+//    }
+
     /**
      * Sets/hides recycler view
      * @param list list of contents to display on recycler view
      * @param isVisible whether to set recycler view to visible or gone
      */
-    private fun setRecyclerView(list: ArrayList<String>, isVisible: Boolean = true) {
+    private fun setRecyclerView(
+        list: ArrayList<String>,
+        isVisible: Boolean = true,
+        changeList: Boolean = true
+    ) {
         val aboutRecyclerView: RecyclerView = findViewById(R.id.recycler_view_about)
         if (isVisible) {
             aboutRecyclerView.visibility = View.VISIBLE
-            aboutRecyclerView.adapter = AboutAdapter(list)
+            if (changeList)
+                aboutRecyclerView.adapter = AboutAdapter(list)
         } else aboutRecyclerView.visibility = View.GONE
     }
 
