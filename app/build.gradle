@@ -70,7 +70,7 @@ dependencies {
     // Work Manager for Time based DND
     implementation "androidx.work:work-runtime-ktx:2.8.1"
     //Androidx Preferences
-    implementation 'androidx.preference:preference:1.2.0'
+    implementation 'androidx.preference:preference-ktx:1.2.0'
     // Test Implementations
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
