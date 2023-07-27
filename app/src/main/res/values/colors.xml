@@ -18,8 +18,9 @@
     <color name="cyan_light">#88ffff</color>
     <color name="cyan_dark">#009faf</color>
     <color name="app_icon_background">#331606</color>
-    <color name="get_started_background">#e64a19</color>
-    <color name="get_started_button">#331606</color>
+    <color name="get_started_background">@color/teal_200</color>
+    <color name="get_started_button">#E38F52</color>
+    <color name="get_started_text">#FFF2E8</color>
     <color name="login_register_tab_color_indicator">@color/cyan_300</color>
     <color name="login_register_tab_text">@color/black</color>
     <color name="hyperlink">#2196F3</color>
@@ -31,4 +32,5 @@
     <color name="light_green_700">#689F38</color>
     <color name="dnd_button_on">@android:color/holo_green_dark</color>
     <color name="dnd_button_off">@android:color/holo_red_dark</color>
+    <color name="pure_night_mode">#ffffff</color>
 </resources>

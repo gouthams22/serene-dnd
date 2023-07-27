@@ -4,16 +4,6 @@
 
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <queries>
-        <!--    Check if LinkedIn's package names    -->
-        <package android:name="com.linkedin.android" />
-
-        <!--    Intent filter to access Browser's package names    -->
-        <intent>
-            <action android:name="android.intent.action.VIEW" />
-            <category android:name="android.intent.category.BROWSABLE" />
-            <data android:scheme="https" />
-        </intent>
-
         <!--    Intent filter to access Mail app's package names    -->
         <intent>
             <action android:name="android.intent.action.SENDTO" />

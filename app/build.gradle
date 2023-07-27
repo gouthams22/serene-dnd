@@ -2,8 +2,10 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
 
-    //Google services Gradle plugin
+    //Google Services Gradle plugin
     id 'com.google.gms.google-services'
+    //Open Source Notices plugin - to display open source libraries and their licenses
+    id 'com.google.android.gms.oss-licenses-plugin'
 }
 
 android {
@@ -64,13 +66,15 @@ dependencies {
     // Dependency for the Google Play services library and its version
     implementation 'com.google.android.gms:play-services-auth:20.6.0'
     // Data Store Preferences
-    implementation "androidx.datastore:datastore-preferences:1.0.0"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.1"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.1"
+    implementation 'androidx.datastore:datastore-preferences:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
     // Work Manager for Time based DND
-    implementation "androidx.work:work-runtime-ktx:2.8.1"
+    implementation 'androidx.work:work-runtime-ktx:2.8.1'
     //Androidx Preferences
-    implementation 'androidx.preference:preference:1.2.0'
+    implementation 'androidx.preference:preference-ktx:1.2.0'
+    //Open Source Notices plugin- to display open source libraries and their licenses
+    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.1'
     // Test Implementations
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
