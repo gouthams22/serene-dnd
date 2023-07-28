@@ -67,6 +67,7 @@ class HomeFragment : Fragment() {
     private val offColorId = R.color.dnd_button_off
     private val Int.px: Int get() = (this * Resources.getSystem().displayMetrics.density).toInt()
 
+    //Coroutine Worker for Time based DND
     class TimeWorker(
         appContext: Context,
         params: WorkerParameters
@@ -278,7 +279,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun turnDndOn(view: View) {
-        // TODO: Update DND based on preferences
         Log.d(TAG, "turnDndOn: turning on")
         // Disable Inputs
         updateInputAccessibility(view, false)
@@ -316,7 +316,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun turnDndOff(view: View) {
-        // TODO: Update DND based on preferences
         Log.d(TAG, "turnDndOn: turning off")
         // Enable Inputs
         updateInputAccessibility(view, true)
@@ -381,6 +380,10 @@ class HomeFragment : Fragment() {
         }
     }
 
+    /**
+     * checks if DND is turned on or off
+     * @return True if DND is turned on otherwise False
+     */
     private fun isDndTurnedOn() =
         notificationManager.currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_ALL
 

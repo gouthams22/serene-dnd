@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.FirebaseAuth
 import io.github.gouthams22.serenednd.R
 import io.github.gouthams22.serenednd.ui.activity.LoginRegisterActivity
@@ -72,7 +71,7 @@ class RegisterFragment : Fragment() {
         }
 
         //Select 'Login' tab if user has account
-        view.findViewById<MaterialTextView>(R.id.have_account).setOnClickListener {
+        view.findViewById<MaterialButton>(R.id.button_fragment_login).setOnClickListener {
             it.isEnabled = false
             (view.context as LoginRegisterActivity).haveAccount()
             it.isEnabled = true

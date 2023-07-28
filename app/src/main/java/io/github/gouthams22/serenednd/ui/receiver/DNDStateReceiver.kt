@@ -17,12 +17,15 @@ class DNDStateReceiver(_homeFragment: HomeFragment, _homeFragmentView: View) : B
     private val homeFragmentView = _homeFragmentView
 
     override fun onReceive(context: Context?, intent: Intent?) {
+        // Catches DND changes
         val isDndStateChanged: Boolean =
             intent?.action.equals(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED)
+
         if (isDndStateChanged) {
             Log.d(TAG, "onReceive: DND state changed")
         }
         homeFragment.updateDnd(homeFragmentView)
+
         val notificationManager =
             context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         Log.d(TAG, "onReceive: ${notificationManager.currentInterruptionFilter}")

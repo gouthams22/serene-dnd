@@ -4,6 +4,9 @@ import android.content.Context
 import android.util.DisplayMetrics
 import android.util.TypedValue
 
+/**
+ * Class contains static methods to convert between dimensions
+ */
 class DimensionConverter {
     companion object {
         /**

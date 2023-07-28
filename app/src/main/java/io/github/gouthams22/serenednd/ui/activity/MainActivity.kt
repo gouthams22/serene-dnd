@@ -65,6 +65,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * checks if user is logged in
+     * @return returns true if user is logged in otherwise false
+     */
     private fun isUserLoggedIn(): Boolean {
         return firebaseAuth.currentUser != null
     }
