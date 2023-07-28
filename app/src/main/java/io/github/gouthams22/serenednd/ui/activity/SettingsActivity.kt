@@ -2,21 +2,30 @@ package io.github.gouthams22.serenednd.ui.activity
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
+import coil.load
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textview.MaterialTextView
+import com.google.firebase.auth.FirebaseAuth
 import io.github.gouthams22.serenednd.R
 import io.github.gouthams22.serenednd.preferences.SettingsPreferences
+import io.github.gouthams22.serenednd.util.DimensionConverter
 import kotlinx.coroutines.launch
 
 class SettingsActivity : AppCompatActivity() {
+
+    private lateinit var firebaseAuth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.settings_fragment_container, SettingsFragment()).commit()
@@ -29,6 +38,37 @@ class SettingsActivity : AppCompatActivity() {
         settingsToolbar.setNavigationOnClickListener {
             finish()
         }
+
+        // Get Firebase Auth instance
+        firebaseAuth = FirebaseAuth.getInstance()
+
+        // User profile picture
+        Log.d(TAG, "onCreate: User pfp:${firebaseAuth.currentUser?.photoUrl}")
+        val imageView: ImageView = findViewById(R.id.image_user_logo)
+        imageView.load(firebaseAuth.currentUser?.photoUrl) {
+            placeholder(R.drawable.ic_outline_account_circle_72)
+            error(R.drawable.ic_outline_account_circle_72)
+            size(
+                DimensionConverter.toPx(applicationContext, 72f).toInt(),
+                DimensionConverter.toPx(applicationContext, 72f).toInt()
+            )
+        }
+
+        // User account email ID
+        Log.d(TAG, "onCreate: User EmailID: ${firebaseAuth.currentUser?.email ?: "error"}")
+        val emailAccountTextView: MaterialTextView = findViewById(R.id.text_email_account)
+        emailAccountTextView.text = firebaseAuth.currentUser?.email ?: "error"
+
+        val logoutButton: MaterialButton = findViewById(R.id.button_logout_settings)
+        logoutButton.setOnClickListener {
+            it.isEnabled = false
+            Log.d(TAG, "onCreate: Log out button clicked")
+            firebaseAuth.signOut()
+            Log.d(TAG, if (firebaseAuth.currentUser != null) "Still signed in" else "Nope")
+            finish()
+            it.isEnabled = true
+        }
+
     }
 
     class SettingsFragment : PreferenceFragmentCompat() {
@@ -86,5 +126,9 @@ class SettingsActivity : AppCompatActivity() {
             }
 
         }
+    }
+
+    companion object {
+        private const val TAG = "SettingsActivity"
     }
 }

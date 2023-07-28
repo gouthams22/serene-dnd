@@ -14,10 +14,70 @@
         app:layout_constraintTop_toTopOf="parent"
         app:title="@string/settings" />
 
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_account"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="24dp"
+        app:cardElevation="1dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/settings_toolbar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginVertical="16dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/image_user_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/user_profile_picture"
+                android:padding="1dp"
+                android:src="@drawable/ic_outline_account_circle_72"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+                app:strokeColor="@color/get_started_background"
+                app:strokeWidth="1dp" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_email_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:fontFamily="serif-monospace"
+                android:text="@string/sample_mail_text"
+                android:textColor="@color/login_register_tab_text"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@id/image_user_logo"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_logout_settings"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/log_out"
+                android:textAllCaps="true"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_email_account" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/settings_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/settings_toolbar"
+        app:layout_constraintTop_toBottomOf="@id/card_account"
         tools:layout="@layout/content_time" />
 </androidx.constraintlayout.widget.ConstraintLayout>

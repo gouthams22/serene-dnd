@@ -53,7 +53,7 @@ class HomeActivity : AppCompatActivity() {
         materialToolbar.inflateMenu(R.menu.home_menu)
         // Log out Menu Button
         materialToolbar.menu.findItem(R.id.logout_menu_item).setOnMenuItemClickListener {
-            Log.d(TAG, "onCreate: Log out Button clicked")
+            Log.d(TAG, "onCreate: Log out button clicked")
             it.isEnabled = false
             firebaseAuth.signOut()
             Log.d(TAG, if (firebaseAuth.currentUser != null) "Still signed in" else "Nope")
@@ -64,7 +64,7 @@ class HomeActivity : AppCompatActivity() {
         }
         // Settings Menu Button
         materialToolbar.menu.findItem(R.id.settings_menu_item).setOnMenuItemClickListener {
-            Log.d(TAG, "onCreate: Settings Button clicked")
+            Log.d(TAG, "onCreate: Settings button clicked")
             it.isEnabled = false
             startActivity(Intent(applicationContext, SettingsActivity::class.java))
             it.isEnabled = true
@@ -72,7 +72,7 @@ class HomeActivity : AppCompatActivity() {
         }
         //About Menu Button
         materialToolbar.menu.findItem(R.id.about_menu_item).setOnMenuItemClickListener {
-            Log.d(TAG, "onCreate: About Button clicked")
+            Log.d(TAG, "onCreate: About button clicked")
             it.isEnabled = false
             startActivity(Intent(applicationContext, AboutActivity::class.java))
             it.isEnabled = true

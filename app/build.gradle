@@ -73,6 +73,8 @@ dependencies {
     implementation 'androidx.work:work-runtime-ktx:2.8.1'
     //Androidx Preferences
     implementation 'androidx.preference:preference-ktx:1.2.0'
+    //Coil image loader
+    implementation 'io.coil-kt:coil:2.4.0'
     //Open Source Notices plugin- to display open source libraries and their licenses
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.1'
     // Test Implementations
