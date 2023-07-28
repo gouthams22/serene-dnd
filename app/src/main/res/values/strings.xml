@@ -1,22 +1,35 @@
 <resources>
+    <!--  Home Activity (opening screen)  -->
     <string name="app_name">Serene DND</string>
     <string name="get_started">Get Started</string>
+
+    <!--  Login/Register Activity  -->
     <string name="app_logo">App logo</string>
-    <string name="registration">Registration</string>
-    <string name="email_id">Email ID</string>
-    <string name="password">Password</string>
-    <string name="confirm_password">Confirm Password</string>
+    <string name="login_and_register_tabs">Login and Register tabs</string>
     <string name="login">Login</string>
     <string name="register">Register</string>
-    <string name="have_account">Have an account?</string>
+    <string name="error">Error</string>
+
+    <!--  Login Fragment  -->
+    <string name="email_id">Email ID</string>
+    <string name="password">Password</string>
     <string name="forgot_password">Forgot Password</string>
-    <string name="login_with_google">Login with Google</string>
+    <string name="privacy_policy_and_open_source_licenses"><![CDATA[Privacy Policy & Open Source Licenses]]></string>
+
+    <!--  Register Fragment  -->
+    <string name="registration">Registration</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="have_account">Have an account?</string>
+
+    <!--  Forgot Password Activity  -->
     <string name="send_reset_link">Send reset link</string>
 
+    <!--  Home Menu item strings  -->
     <string name="log_out">Log Out</string>
     <string name="settings">Settings</string>
     <string name="about">About</string>
 
+    <!--  Home page  -->
     <string name="home">Home</string>
     <string name="priority">Priority</string>
     <string name="location">Location</string>

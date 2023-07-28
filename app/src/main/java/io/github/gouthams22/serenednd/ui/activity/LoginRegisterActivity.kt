@@ -21,9 +21,9 @@ class LoginRegisterActivity : AppCompatActivity() {
         viewPager.adapter = LoginRegisterPagerAdapter(supportFragmentManager, lifecycle)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = when (position) {
-                0 -> "Login"
-                1 -> "Register"
-                else -> "Error"
+                0 -> getString(R.string.login)
+                1 -> getString(R.string.register)
+                else -> getString(R.string.error)
             }
         }.attach()
     }

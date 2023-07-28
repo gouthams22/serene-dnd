@@ -20,10 +20,10 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import io.github.gouthams22.serenednd.R
+import io.github.gouthams22.serenednd.ui.activity.AboutActivity
 import io.github.gouthams22.serenednd.ui.activity.ForgotPasswordActivity
 import io.github.gouthams22.serenednd.ui.activity.HomeActivity
 import io.github.gouthams22.serenednd.ui.activity.LoginRegisterActivity
@@ -52,9 +52,18 @@ class LoginFragment : Fragment() {
 
         val loginEmailField: TextInputEditText = view.findViewById(R.id.login_email_field)
         val loginPasswordField: TextInputEditText = view.findViewById(R.id.login_password_field)
-        val forgotPasswordTextView: MaterialTextView = view.findViewById(R.id.forgot_password)
+        val forgotPasswordTextView: MaterialButton = view.findViewById(R.id.button_forgot_password)
+        val privacyLicensesButton: MaterialButton =
+            view.findViewById(R.id.button_privacy_and_licenses)
 
-        //redirecting to ForgotPasswordActivity
+        // redirecting to AboutActivity
+        privacyLicensesButton.setOnClickListener {
+            it.isEnabled = false
+            startActivity(Intent(view.context, AboutActivity::class.java))
+            it.isEnabled = true
+        }
+
+        // redirecting to ForgotPasswordActivity
         forgotPasswordTextView.setOnClickListener {
             loginProgressIndicator.visibility = View.VISIBLE
             startActivity(Intent(view.context, ForgotPasswordActivity::class.java))
@@ -69,7 +78,7 @@ class LoginFragment : Fragment() {
             .build()
         googleSignInClient = GoogleSignIn.getClient(view.context as LoginRegisterActivity, gso)
 
-        //Google login button
+        // Google login button
         val googleSignInButton: SignInButton = view.findViewById(R.id.sign_in_google_button)
         googleSignInButton.setSize(SignInButton.SIZE_WIDE)
         googleSignInButton.setOnClickListener {
@@ -78,7 +87,7 @@ class LoginFragment : Fragment() {
 
         // Email & password login button
         val loginButton: MaterialButton = view.findViewById(R.id.login_button)
-        //set on click listener for Login button
+        // set on click listener for Login button
         loginButton.setOnClickListener {
             disableInput(view)
             loginProgressIndicator.visibility = View.VISIBLE
@@ -127,6 +136,10 @@ class LoginFragment : Fragment() {
         }
     }
 
+    /**
+     * login to firebase from google sign in account
+     * @param account google account from [GoogleSignInAccount]
+     */
     private fun updateFirebaseCredential(account: GoogleSignInAccount) {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
         Log.d(TAG, "update Firebase credential")
@@ -140,6 +153,9 @@ class LoginFragment : Fragment() {
             }
     }
 
+    /**
+     * redirects to home page on login confirmation
+     */
     private fun startHomeActivity() {
         //Add parameters or other feature if necessary
         val loginRegisterActivity = rootView.context as LoginRegisterActivity
@@ -153,6 +169,11 @@ class LoginFragment : Fragment() {
         loginRegisterActivity.finish()
     }
 
+    /**
+     * Signs in with firebase using email and password
+     * @param emailField EditText of email
+     * @param passwordField EditText of password
+     */
     private fun authenticateFirebase(
         view: View,
         emailField: TextInputEditText,
@@ -203,6 +224,12 @@ class LoginFragment : Fragment() {
         }
     }
 
+    /**
+     * validate the email and password field
+     * @param emailField EditText of email
+     * @param passwordField EditText of password
+     * @return whether the fields are valid(true) or not(false)
+     */
     private fun validateFields(
         emailField: TextInputEditText,
         passwordField: TextInputEditText
