@@ -28,7 +28,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:materialThemeOverlay="@style/button_overlay"
         app:selectionRequired="true"
         app:singleSelection="true">
 
@@ -38,10 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/total_silence"
-            android:textColor="@color/light_green_700"
-            android:textStyle="bold"
-            app:rippleColor="@color/light_green_700"
-            app:strokeColor="@color/light_green_700" />
+            android:textStyle="bold" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/priority_only_button"
@@ -49,10 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/priority_only"
-            android:textColor="@color/light_green_700"
-            android:textStyle="bold"
-            app:rippleColor="@color/light_green_700"
-            app:strokeColor="@color/light_green_700" />
+            android:textStyle="bold" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/calls_only_button"
@@ -60,10 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/calls_only"
-            android:textColor="@color/light_green_700"
-            android:textStyle="bold"
-            app:rippleColor="@color/light_green_700"
-            app:strokeColor="@color/light_green_700" />
+            android:textStyle="bold" />
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -72,8 +62,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_registration"
-        android:hint="@string/duration"
-        app:hintTextColor="@color/light_green_700"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/type_toggle">
 
@@ -81,8 +69,8 @@
             android:id="@+id/duration_auto_complete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/duration"
             android:inputType="none"
-            android:textColor="@color/light_green_700"
             app:simpleItems="@array/dnd_duration" />
     </com.google.android.material.textfield.TextInputLayout>
 

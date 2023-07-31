@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textview.MaterialTextView
 import io.github.gouthams22.serenednd.BuildConfig
 import io.github.gouthams22.serenednd.R
@@ -28,8 +29,7 @@ import kotlinx.coroutines.launch
 
 /*
 Tasks:
-1. Research Custom Tabs
-2. Research Deep links
+1. Research Deep links
  */
 class AboutActivity : AppCompatActivity() {
 
@@ -119,7 +119,7 @@ class AboutActivity : AppCompatActivity() {
 
         // Set Layout Manager for Recycler View
         val aboutRecyclerView: RecyclerView = findViewById(R.id.recycler_view_about)
-        aboutRecyclerView.visibility = View.GONE
+        findViewById<MaterialCardView>(R.id.card_privacy_policy).visibility = View.GONE
         val linearLayoutManager = LinearLayoutManager(this)
         aboutRecyclerView.layoutManager = linearLayoutManager
     }
@@ -191,13 +191,13 @@ class AboutActivity : AppCompatActivity() {
         }
 
         // sets recycler view
+        val privacyCardView: MaterialCardView = findViewById(R.id.card_privacy_policy)
         val aboutRecyclerView: RecyclerView = findViewById(R.id.recycler_view_about)
-        if (aboutRecyclerView.visibility == View.VISIBLE)
-            aboutRecyclerView.visibility = View.GONE
+        if (privacyCardView.visibility == View.VISIBLE)
+            privacyCardView.visibility = View.GONE
         else
-            aboutRecyclerView.visibility = View.VISIBLE
+            privacyCardView.visibility = View.VISIBLE
         aboutRecyclerView.adapter = AboutAdapter(policyList)
-
     }
 
     companion object {

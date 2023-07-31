@@ -122,7 +122,8 @@ class HomeActivity : AppCompatActivity() {
             }
         }
         // Setting default view when activity is opened
-        bottomNavigationView.selectedItemId = R.id.home
+        if (savedInstanceState == null)
+            bottomNavigationView.selectedItemId = R.id.home
 
         // App Night mode
         setNightMode()
@@ -144,9 +145,8 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun requestRequiredPermission() {
-        if (!checkPermission()) {
+        if (!checkPermission())
             requestDNDPermission()
-        }
     }
 
     private fun requestDNDPermission() {
