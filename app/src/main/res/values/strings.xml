@@ -15,6 +15,7 @@
     <string name="password">Password</string>
     <string name="forgot_password">Forgot Password</string>
     <string name="privacy_policy_and_open_source_licenses"><![CDATA[Privacy Policy & Open Source Licenses]]></string>
+    <string name="forgot_password_description">Enter your registered Email address</string>
 
     <!--  Register Fragment  -->
     <string name="registration">Registration</string>

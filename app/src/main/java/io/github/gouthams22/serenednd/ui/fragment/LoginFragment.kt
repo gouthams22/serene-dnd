@@ -1,6 +1,7 @@
 package io.github.gouthams22.serenednd.ui.fragment
 
 import android.app.Activity
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -18,13 +20,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.tasks.Task
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import io.github.gouthams22.serenednd.R
 import io.github.gouthams22.serenednd.ui.activity.AboutActivity
-import io.github.gouthams22.serenednd.ui.activity.ForgotPasswordActivity
 import io.github.gouthams22.serenednd.ui.activity.HomeActivity
 import io.github.gouthams22.serenednd.ui.activity.LoginRegisterActivity
 
@@ -37,7 +39,6 @@ class LoginFragment : Fragment() {
 
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
-    private lateinit var rootView: View
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +46,6 @@ class LoginFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_login, container, false)
-        rootView = view
 
         // Loading bar
         val loginProgressIndicator: LinearProgressIndicator = view.findViewById(R.id.login_progress)
@@ -65,9 +65,11 @@ class LoginFragment : Fragment() {
 
         // redirecting to ForgotPasswordActivity
         forgotPasswordTextView.setOnClickListener {
+            it.isEnabled = false
             loginProgressIndicator.visibility = View.VISIBLE
-            startActivity(Intent(view.context, ForgotPasswordActivity::class.java))
+            openForgotDialog(view)
             loginProgressIndicator.visibility = View.INVISIBLE
+            it.isEnabled = true
         }
 
         // Firebase Authentication Instance
@@ -82,7 +84,9 @@ class LoginFragment : Fragment() {
         val googleSignInButton: SignInButton = view.findViewById(R.id.sign_in_google_button)
         googleSignInButton.setSize(SignInButton.SIZE_WIDE)
         googleSignInButton.setOnClickListener {
+            it.isEnabled = false
             signIntoGoogle()
+            it.isEnabled = true
         }
 
         // Email & password login button
@@ -112,6 +116,83 @@ class LoginFragment : Fragment() {
         return view
     }
 
+    /**
+     * Opens Dialog to reset password
+     * @param view view of the fragment
+     */
+    private fun openForgotDialog(view: View) {
+        val builder = MaterialAlertDialogBuilder(view.context)
+            .setTitle(R.string.forgot_password)
+            .setMessage(getString(R.string.forgot_password_description))
+            .setView(R.layout.dialog_forgot_password)
+            .setPositiveButton(R.string.send_reset_link) { _, _ -> }
+        val passwordAlertDialog = builder.create()
+
+        passwordAlertDialog.setCanceledOnTouchOutside(false)
+        passwordAlertDialog.setCancelable(false)
+        passwordAlertDialog.show()
+
+        // Reset email button
+        passwordAlertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
+            val forgotEmailEditText: TextInputEditText? =
+                passwordAlertDialog.findViewById(R.id.forgot_email_field)
+
+            // Locking email field and button to not be able to interact
+            disableDialogInput(passwordAlertDialog)
+
+            if (isEmailValid(forgotEmailEditText?.text?.trim().toString())) {
+                Log.d(TAG, "isEmailValid: true")
+                firebaseAuth.sendPasswordResetEmail(forgotEmailEditText?.text?.trim().toString())
+                    .addOnCompleteListener { task ->
+                        Log.d(
+                            TAG,
+                            "FirebaseAuth password reset task: " + task.isSuccessful.toString()
+                        )
+
+                        // Releasing email field and button to be able to interact
+                        enableDialogInput(passwordAlertDialog)
+
+                        // Displaying if task is successful
+                        if (task.isSuccessful) {
+                            forgotEmailEditText?.error = null
+                            Toast.makeText(
+                                context,
+                                "Email sent to the registered mail successfully",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            passwordAlertDialog.dismiss()
+                        } else
+                            forgotEmailEditText?.error =
+                                "Couldn't send reset password link to the above email"
+                        forgotEmailEditText?.requestFocus()
+
+                    }
+            } else {
+                forgotEmailEditText?.error = "Invalid email format"
+                forgotEmailEditText?.requestFocus()
+                enableDialogInput(passwordAlertDialog)
+            }
+        }
+    }
+
+    /**
+     * Enables Inputs in Alert Dialog
+     * @param alertDialog alert dialog being used
+     */
+    private fun enableDialogInput(alertDialog: AlertDialog) {
+        alertDialog.findViewById<TextInputEditText>(R.id.forgot_email_field)?.isEnabled = true
+        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).isEnabled = true
+    }
+
+    /**
+     * Disables Inputs in Alert Dialog
+     * @param alertDialog alert dialog being used
+     */
+    private fun disableDialogInput(alertDialog: AlertDialog) {
+        alertDialog.findViewById<TextInputEditText>(R.id.forgot_email_field)?.isEnabled = false
+        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).isEnabled = false
+    }
+
     private fun signIntoGoogle() {
         val signInIntent = googleSignInClient.signInIntent
         launcher.launch(signInIntent)
@@ -122,17 +203,17 @@ class LoginFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                handleResults(task)
+                handleResults(task, view)
             }
         }
 
-    private fun handleResults(task: Task<GoogleSignInAccount>) {
+    private fun handleResults(task: Task<GoogleSignInAccount>, view: View?) {
         if (task.isSuccessful) {
             val account: GoogleSignInAccount? = task.result
             if (account != null)
-                updateFirebaseCredential(account)
+                updateFirebaseCredential(account, view)
         } else {
-            Toast.makeText(rootView.context, task.exception.toString(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(view?.context, task.exception.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -140,15 +221,15 @@ class LoginFragment : Fragment() {
      * login to firebase from google sign in account
      * @param account google account from [GoogleSignInAccount]
      */
-    private fun updateFirebaseCredential(account: GoogleSignInAccount) {
+    private fun updateFirebaseCredential(account: GoogleSignInAccount, view: View?) {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
         Log.d(TAG, "update Firebase credential")
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
             Log.d(TAG, "Successful authentication")
-            startHomeActivity()
+            startHomeActivity(view)
         }
             .addOnCanceledListener {
-                Toast.makeText(rootView.context, "Canceled", Toast.LENGTH_SHORT).show()
+                Toast.makeText(view?.context, "Canceled", Toast.LENGTH_SHORT).show()
                 Log.d(TAG, "Canceled Firebase Authentication")
             }
     }
@@ -156,14 +237,14 @@ class LoginFragment : Fragment() {
     /**
      * redirects to home page on login confirmation
      */
-    private fun startHomeActivity() {
+    private fun startHomeActivity(view: View?) {
         //Add parameters or other feature if necessary
-        val loginRegisterActivity = rootView.context as LoginRegisterActivity
+        val loginRegisterActivity = view?.context as LoginRegisterActivity
         Log.d(TAG, "startHomeActivity: " + loginRegisterActivity.parent.toString())
-        val intent = Intent(rootView.context, HomeActivity::class.java)
-        (rootView.context as LoginRegisterActivity).setResult(
+        val intent = Intent(view.context, HomeActivity::class.java)
+        (view.context as LoginRegisterActivity).setResult(
             AppCompatActivity.RESULT_OK,
-            (rootView.context as LoginRegisterActivity).intent
+            (view.context as LoginRegisterActivity).intent
         )
         startActivity(intent)
         loginRegisterActivity.finish()
@@ -191,7 +272,7 @@ class LoginFragment : Fragment() {
             if (task.isSuccessful) {
                 Log.d(TAG, "Login Success, User:" + firebaseAuth.currentUser)
                 if (firebaseAuth.currentUser?.isEmailVerified == true) {
-                    startHomeActivity()
+                    startHomeActivity(view)
                 } else {
                     Log.d(TAG, "Login Success, email not verified")
                     task.result.user?.sendEmailVerification()
