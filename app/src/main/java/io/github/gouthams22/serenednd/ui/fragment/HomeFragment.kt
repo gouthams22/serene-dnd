@@ -7,15 +7,13 @@ import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.allViews
 import androidx.fragment.app.Fragment
@@ -29,6 +27,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.slider.Slider
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
@@ -47,7 +46,6 @@ import java.util.concurrent.TimeUnit
 class HomeFragment : Fragment() {
 
     private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var rootView: View
     private lateinit var dndStateReceiver: DNDStateReceiver
     private lateinit var notificationManager: NotificationManager
     private lateinit var dndPreference: DNDPreference
@@ -97,11 +95,12 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view: View = inflater.inflate(R.layout.fragment_home, container, false)
-        Log.d(TAG, "onCreateView: ${VERSION.SDK_INT}")
+        return inflater.inflate(R.layout.fragment_home, container, false)
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         // Initializing rootView
-        rootView = view
 
         dndDuration = resources.getStringArray(R.array.dnd_duration)
 
@@ -113,12 +112,10 @@ class HomeFragment : Fragment() {
 
         // Receiver to listen to the state of DND
         // Passing supportFragmentManager's last fragment(assuming it as HomeFragment) to Receiver
-        dndStateReceiver = DNDStateReceiver(
-            (view.context as HomeActivity).supportFragmentManager.fragments.last() as HomeFragment,
-            view
-        )
+        dndStateReceiver =
+            DNDStateReceiver((view.context as HomeActivity).supportFragmentManager.fragments.last() as HomeFragment)
 
-        Log.d(TAG, "onCreateView: ${firebaseAuth.currentUser != null}")
+        Log.d(TAG, "onViewCreated: ${firebaseAuth.currentUser != null}")
 
         val timeRootView: ConstraintLayout = view.findViewById(R.id.layout_time)
         val timeSlider: Slider = view.findViewById(R.id.time_slider)
@@ -163,23 +160,24 @@ class HomeFragment : Fragment() {
         val durationTextView: MaterialAutoCompleteTextView =
             view.findViewById(R.id.duration_auto_complete)
         durationTextView.setOnItemClickListener { _, _, position, _ ->
-            Log.d(TAG, "onCreateView: Duration: ${dndDuration[position]}")
+            Log.d(TAG, "onViewCreated: Duration: ${dndDuration[position]}")
             when (position) {
                 // Always
                 0 -> {
                     setDurationPreferences(dndDuration[0])
-                    Toast.makeText(view.context, dndDuration[0], Toast.LENGTH_SHORT).show()
                 }
                 // Time based DND
                 1 -> {
                     setDurationPreferences(dndDuration[1])
-                    Toast.makeText(view.context, dndDuration[1], Toast.LENGTH_SHORT).show()
                 }
                 // Location based DND
                 2 -> {
-                    //TODO: Implement location
                     setDurationPreferences(dndDuration[2])
-                    Toast.makeText(view.context, dndDuration[2], Toast.LENGTH_SHORT).show()
+
+                    //TODO: Implement location
+                    Snackbar.make(view, getString(R.string.not_yet_finished), Snackbar.LENGTH_SHORT)
+                        .setAnchorView(activity?.findViewById(R.id.home_navbar))
+                        .show()
                 }
             }
         }
@@ -244,30 +242,28 @@ class HomeFragment : Fragment() {
         }
 
         //DND button solid color for Versions above S(31)
-        if (VERSION.SDK_INT >= VERSION_CODES.S) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             setButtonSolidColor(android.R.color.system_accent1_200)
         } else {
             setButtonSolidColor(android.R.color.transparent)
         }
-
-        return view
     }
 
     override fun onStart() {
         super.onStart()
         Log.d(TAG, "onStop: dndStateReceiver started")
-        rootView.context.registerReceiver(
+        context?.registerReceiver(
             dndStateReceiver,
             IntentFilter(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED)
         )
-        updateDnd(rootView)
+        updateDnd()
         Log.d(TAG, "onStart: DND state: ${notificationManager.currentInterruptionFilter}")
     }
 
     override fun onStop() {
         super.onStop()
         Log.d(TAG, "onStop: dndStateReceiver stopped")
-        rootView.context.unregisterReceiver(dndStateReceiver)
+        context?.unregisterReceiver(dndStateReceiver)
     }
 
     private fun updateInputAccessibility(view: View, isEnabled: Boolean) {
@@ -344,12 +340,12 @@ class HomeFragment : Fragment() {
      */
     private fun setButtonStrokeColor(colorId: Int) {
         Log.d(TAG, "setButtonStrokeColor: $colorId")
-        val dndButton: ImageButton = rootView.findViewById(R.id.button_dnd)
-        val rippleDrawable: RippleDrawable = dndButton.background as RippleDrawable
+        val dndButton: ImageButton? = view?.findViewById(R.id.button_dnd)
+        val rippleDrawable: RippleDrawable = dndButton?.background as RippleDrawable
         val shapeDrawable = rippleDrawable.getDrawable(0) as GradientDrawable
         shapeDrawable.setStroke(
             16.px,
-            resources.getColor(colorId, (rootView.context as Context).theme)
+            resources.getColor(colorId, (context as Context).theme)
         )
     }
 
@@ -359,23 +355,23 @@ class HomeFragment : Fragment() {
      */
     private fun setButtonSolidColor(colorId: Int) {
         Log.d(TAG, "setButtonSolidColor: $colorId")
-        val dndButton: ImageButton = rootView.findViewById(R.id.button_dnd)
-        val rippleDrawable: RippleDrawable = dndButton.background as RippleDrawable
+        val dndButton: ImageButton? = view?.findViewById(R.id.button_dnd)
+        val rippleDrawable: RippleDrawable = dndButton?.background as RippleDrawable
         val shapeDrawable = rippleDrawable.getDrawable(0) as GradientDrawable
         shapeDrawable.color = ColorStateList.valueOf(
             resources.getColor(
                 colorId,
-                (rootView.context as Context).theme
+                (context as Context).theme
             )
         )
     }
 
-    fun updateDnd(view: View) {
+    fun updateDnd() {
         if (isDndTurnedOn()) {
             setButtonStrokeColor(onColorId)
-            updateInputAccessibility(view, false)
+            view?.let { updateInputAccessibility(it, false) }
         } else {
-            updateInputAccessibility(view, true)
+            view?.let { updateInputAccessibility(it, true) }
             setButtonStrokeColor(offColorId)
         }
     }

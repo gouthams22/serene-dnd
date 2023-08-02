@@ -30,7 +30,11 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_register, container, false)
+        return inflater.inflate(R.layout.fragment_register, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         val registerProgressIndicator: LinearProgressIndicator =
             view.findViewById(R.id.register_progress)
@@ -76,7 +80,6 @@ class RegisterFragment : Fragment() {
             (view.context as LoginRegisterActivity).haveAccount()
             it.isEnabled = true
         }
-        return view
     }
 
     private fun registerAccount(view: View, email: String, password: String) {

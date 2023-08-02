@@ -45,7 +45,11 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_login, container, false)
+        return inflater.inflate(R.layout.fragment_login, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         // Loading bar
         val loginProgressIndicator: LinearProgressIndicator = view.findViewById(R.id.login_progress)
@@ -113,7 +117,6 @@ class LoginFragment : Fragment() {
                 enableInput(view)
             }
         }
-        return view
     }
 
     /**
@@ -126,10 +129,8 @@ class LoginFragment : Fragment() {
             .setMessage(getString(R.string.forgot_password_description))
             .setView(R.layout.dialog_forgot_password)
             .setPositiveButton(R.string.send_reset_link) { _, _ -> }
-        val passwordAlertDialog = builder.create()
 
-        passwordAlertDialog.setCanceledOnTouchOutside(false)
-        passwordAlertDialog.setCancelable(false)
+        val passwordAlertDialog = builder.create()
         passwordAlertDialog.show()
 
         // Reset email button
