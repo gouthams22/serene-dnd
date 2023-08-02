@@ -4,10 +4,19 @@
     <color name="black">#FF000000</color>
     <color name="teal_200">#80cbc4</color>
     <color name="teal_700">#00796B</color>
+    <color name="app_icon_background">@color/teal_700</color>
     <color name="deep_orange_dark">#ac0800</color>
     <color name="get_started_background">@color/teal_200</color>
     <color name="get_started_button">#E38F52</color>
     <color name="dnd_button_on">@android:color/holo_green_dark</color>
     <color name="dnd_button_off">@android:color/holo_red_dark</color>
     <color name="pure_night_mode">#ffffff</color>
+
+    <!--  Material error colors  -->
+    <color name="error10">#410002</color>
+    <color name="error20">#690005</color>
+    <color name="error30">#93000a</color>
+    <color name="error40">#ba1a1a</color>
+    <color name="error80">#ffb4ab</color>
+    <color name="error90">#ffdad6</color>
 </resources>

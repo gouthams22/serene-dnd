@@ -22,10 +22,10 @@
         <item name="colorTertiaryContainer">#cfe5ff</item>
         <item name="colorOnTertiaryContainer">#001d33</item>
         <!--    Error colors    -->
-        <item name="colorError">#ba1a1a</item>
-        <item name="colorOnError">#ffffff</item>
-        <item name="colorErrorContainer">#ffdad6</item>
-        <item name="colorOnErrorContainer">#410002</item>
+        <item name="colorError">@color/error40</item>
+        <item name="colorOnError">@android:color/white</item>
+        <item name="colorErrorContainer">@color/error90</item>
+        <item name="colorOnErrorContainer">@color/error10</item>
         <!--    Surface colors    -->
         <!--    Neutral = #8e9190    -->
         <item name="colorSurface">#fafdfb</item>

@@ -7,7 +7,6 @@ import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -239,13 +238,6 @@ class HomeFragment : Fragment() {
                         durationTextView.setText(dndDuration[2], false)
 
             }
-        }
-
-        //DND button solid color for Versions above S(31)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            setButtonSolidColor(android.R.color.system_accent1_200)
-        } else {
-            setButtonSolidColor(android.R.color.transparent)
         }
     }
 
