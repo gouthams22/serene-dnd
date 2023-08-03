@@ -13,6 +13,7 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.HtmlCompat
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -66,6 +67,9 @@ class AboutActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
+
+        // Resizing window to fit on system window size
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         val aboutToolbar: MaterialToolbar = findViewById(R.id.about_toolbar)
         // Set back button

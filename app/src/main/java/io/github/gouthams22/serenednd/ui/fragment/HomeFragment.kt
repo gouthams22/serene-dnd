@@ -29,6 +29,7 @@ import com.google.android.material.slider.Slider
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.FirebaseAuth
 import io.github.gouthams22.serenednd.R
 import io.github.gouthams22.serenednd.preferences.DNDPreference
@@ -117,6 +118,8 @@ class HomeFragment : Fragment() {
         Log.d(TAG, "onViewCreated: ${firebaseAuth.currentUser != null}")
 
         val timeRootView: ConstraintLayout = view.findViewById(R.id.layout_time)
+        val timeTextView: MaterialTextView = view.findViewById(R.id.text_time)
+        timeTextView.text = timeDivisions[0]
         val timeSlider: Slider = view.findViewById(R.id.time_slider)
         timeSlider.valueFrom = 0F
         timeSlider.valueTo = timeDivisions.size.toFloat() - 1
@@ -134,6 +137,9 @@ class HomeFragment : Fragment() {
             }
 
         })
+        timeSlider.addOnChangeListener { _, value, _ ->
+            timeTextView.text = timeDivisions[value.toInt()]
+        }
 
         // MaterialButtonToggleGroup
         val typeToggle: MaterialButtonToggleGroup = view.findViewById(R.id.type_toggle)
@@ -260,6 +266,7 @@ class HomeFragment : Fragment() {
 
     private fun updateInputAccessibility(view: View, isEnabled: Boolean) {
         view.findViewById<Slider>(R.id.time_slider).isEnabled = isEnabled
+        view.findViewById<MaterialTextView>(R.id.text_time).isEnabled = isEnabled
         for (i in view.findViewById<MaterialButtonToggleGroup>(R.id.type_toggle).allViews) {
             i.isEnabled = isEnabled
         }

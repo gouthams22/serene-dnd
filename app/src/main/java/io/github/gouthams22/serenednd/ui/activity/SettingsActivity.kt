@@ -6,6 +6,7 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
@@ -25,6 +26,9 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+
+        // Resizing window to fit on system window size
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
