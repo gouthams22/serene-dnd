@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="get_started_background">@android:color/system_accent1_200</color>
-    <color name="get_started_button">@color/teal_700</color>
-    <color name="login_register_tab_text">@android:color/system_accent1_700</color>
+<!--    <color name="get_started_background">@android:color/system_accent1_200</color>-->
+<!--    <color name="get_started_button">@color/teal_700</color>-->
+<!--    <color name="login_register_tab_text">@android:color/system_accent1_700</color>-->
 </resources>

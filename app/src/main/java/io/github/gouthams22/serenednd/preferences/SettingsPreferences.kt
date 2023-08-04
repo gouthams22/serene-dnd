@@ -26,6 +26,11 @@ class SettingsPreferences(lifecycleCoroutineScope: LifecycleCoroutineScope, cont
     private val scope = lifecycleCoroutineScope
     private val currentContext = context
 
+    /**
+     * store value to given key in [SettingsPreferences]
+     * @param key key for which [value] is to be stored
+     * @param value value to be stored for the given key
+     */
     override fun putString(key: String?, value: String?) {
         Log.d(TAG, "putString: $value")
         scope
@@ -39,17 +44,20 @@ class SettingsPreferences(lifecycleCoroutineScope: LifecycleCoroutineScope, cont
             }
     }
 
-    override fun getString(key: String?, defValue: String?): String? {
-        //TODO implement getString
-        return super.getString(key, defValue)
-    }
-
+    /**
+     * store Day/Night theme preference
+     * @param theme theme preference to be stored
+     */
     suspend fun storeTheme(theme: String) {
         currentContext.settingsDataStore.edit {
             it[APP_THEME] = theme
         }
     }
 
+    /**
+     * retrieve Day/Night theme preference
+     * @return Day/Night theme preference
+     */
     suspend fun getTheme(): String {
         Log.d(TAG, "getTheme: invoked")
         return currentContext.settingsDataStore.data.first()[APP_THEME]

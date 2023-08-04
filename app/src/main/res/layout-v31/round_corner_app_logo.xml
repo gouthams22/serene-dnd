@@ -4,6 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/round_corner_image"
+    android:backgroundTint="@android:color/system_accent1_600"
     android:clipToOutline="true"
     android:contentDescription="@string/app_logo"
     android:src="@mipmap/ic_launcher" />

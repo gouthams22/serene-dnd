@@ -2,22 +2,39 @@
     <!-- Base application theme. -->
     <style name="Theme.SereneDND" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/green_700</item>
+        <item name="colorPrimary">#50dbcf</item>
         <item name="colorPrimaryVariant">@color/deep_orange_dark</item>
-        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorOnPrimary">#003733</item>
+        <item name="colorPrimaryContainer">#00504b</item>
+        <item name="colorOnPrimaryContainer">#71f7eb</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondary">#b1ccc8</item>
         <item name="colorSecondaryVariant">@color/teal_200</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorOnSecondary">#1c3532</item>
+        <item name="colorSecondaryContainer">#324b48</item>
+        <item name="colorOnSecondaryContainer">#cce8e4</item>
+        <!--  Tertiary brand color.  -->
+        <!--    #7a93af    -->
+        <item name="colorTertiary">#afc9e7</item>
+        <item name="colorOnTertiary">#17324a</item>
+        <item name="colorTertiaryContainer">#2f4961</item>
+        <item name="colorOnTertiaryContainer">#cfe5ff</item>
+        <!--    Error colors    -->
+        <item name="colorError">@color/error80</item>
+        <item name="colorOnError">@color/error20</item>
+        <item name="colorErrorContainer">@color/error30</item>
+        <item name="colorOnErrorContainer">@color/error90</item>
+        <!--    Surface colors    -->
+        <!--    Neutral = #8e9190    -->
+        <item name="colorSurface">#191c1c</item>
+        <item name="colorOnSurface">#e0e3e1</item>
+        <item name="colorOutline">#899391</item>
+
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">false</item>
         <!-- Customize your theme here. -->
         <item name="android:navigationBarColor">@android:color/transparent</item>
-    </style>
-
-    <style name="button_overlay">
-        <item name="colorSecondaryContainer">#5F689F38</item>
     </style>
 
 </resources>

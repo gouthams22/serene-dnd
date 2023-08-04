@@ -8,11 +8,11 @@
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/register_progress"
+        style="@style/Widget.Material3.LinearProgressIndicator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:visibility="invisible"
-        app:indicatorColor="@color/cyan_300"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
@@ -80,6 +80,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/register_button"
+        style="@style/Widget.Material3.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_registration"
@@ -90,13 +91,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/reg_confirm_password_input_layout" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/have_account"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_fragment_login"
+        style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/margin_registration"
         android:text="@string/have_account"
-        android:textColor="@color/hyperlink"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/register_button" />
 

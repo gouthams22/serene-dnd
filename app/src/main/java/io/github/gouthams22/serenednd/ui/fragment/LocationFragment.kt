@@ -19,8 +19,12 @@ class LocationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        //TODO: Implement the features
         return inflater.inflate(R.layout.fragment_location, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        //TODO Implement the features
     }
 
     companion object {

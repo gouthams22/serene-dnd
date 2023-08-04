@@ -22,6 +22,14 @@ import io.github.gouthams22.serenednd.ui.fragment.LocationFragment
 import io.github.gouthams22.serenednd.ui.fragment.PriorityFragment
 import kotlinx.coroutines.launch
 
+/*
+Notes:
+
+        //Surface color with right elevation matches the bottom navigation color with the system navigation
+        window.navigationBarColor= SurfaceColors.getColorForElevation(this,bottomNavigationView.elevation)
+        window.navigationBarColor= SurfaceColors.getColorForElevation(this,7f)
+        window.navigationBarColor= SurfaceColors.SURFACE_2.getColor(this)
+ */
 class HomeActivity : AppCompatActivity() {
 
     companion object {
@@ -44,12 +52,8 @@ class HomeActivity : AppCompatActivity() {
         // Resizing window to fit on system window size
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-//        val color = SurfaceColors.SURFACE_1.getColor(this)
-//        window.statusBarColor = color
-
         // Top app bar Menu layout
-        val materialToolbar: MaterialToolbar = findViewById(R.id.home_toolbar)
-//        materialToolbar.background=color.toDrawable()
+        val materialToolbar: MaterialToolbar = findViewById(R.id.toolbar_home)
         materialToolbar.inflateMenu(R.menu.home_menu)
         // Log out Menu Button
         materialToolbar.menu.findItem(R.id.logout_menu_item).setOnMenuItemClickListener {
@@ -94,7 +98,7 @@ class HomeActivity : AppCompatActivity() {
                 R.id.home -> {
                     Log.d(TAG, "navbar: ${getString(R.string.home)}")
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.home_fragment_container_view, HomeFragment.newInstance())
+                        .replace(R.id.fragment_container_view_home, HomeFragment.newInstance())
                         .commit()
                     true
                 }
@@ -102,7 +106,7 @@ class HomeActivity : AppCompatActivity() {
                 R.id.priority -> {
                     Log.d(TAG, "navbar: ${getString(R.string.priority)}")
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.home_fragment_container_view, PriorityFragment.newInstance())
+                        .replace(R.id.fragment_container_view_home, PriorityFragment.newInstance())
                         .commit()
                     true
                 }
@@ -110,7 +114,7 @@ class HomeActivity : AppCompatActivity() {
                 R.id.location -> {
                     Log.d(TAG, "navbar: ${getString(R.string.location)}")
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.home_fragment_container_view, LocationFragment.newInstance())
+                        .replace(R.id.fragment_container_view_home, LocationFragment.newInstance())
                         .commit()
                     true
                 }
@@ -122,7 +126,8 @@ class HomeActivity : AppCompatActivity() {
             }
         }
         // Setting default view when activity is opened
-        bottomNavigationView.selectedItemId = R.id.home
+        if (savedInstanceState == null)
+            bottomNavigationView.selectedItemId = R.id.home
 
         // App Night mode
         setNightMode()
@@ -144,9 +149,8 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun requestRequiredPermission() {
-        if (!checkPermission()) {
+        if (!checkPermission())
             requestDNDPermission()
-        }
     }
 
     private fun requestDNDPermission() {

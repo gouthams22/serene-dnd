@@ -22,12 +22,18 @@ class DNDPreference(val context: Context) {
         val DURATION = stringPreferencesKey("DURATION")
     }
 
+    /**
+     * Set DND type preference
+     */
     suspend fun storeTypePreference(type: String) {
         context.dndDataStore.edit {
             it[TYPE] = type
         }
     }
 
+    /**
+     * Set DND duration preference
+     */
     suspend fun storeDurationPreference(type: String) {
         context.dndDataStore.edit {
             it[DURATION] = type

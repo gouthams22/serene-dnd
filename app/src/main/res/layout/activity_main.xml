@@ -25,20 +25,18 @@
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:visibility="invisible"
-        app:indicatorColor="@color/get_started_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:trackColor="@color/get_started_background" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_get_started"
+        style="@style/Widget.Material3.Button.ElevatedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/get_started_button"
         android:padding="16dp"
         android:text="@string/get_started"
         android:textAllCaps="true"
-        android:textColor="@color/get_started_text"
         android:textSize="@dimen/text_size_16"
         android:textStyle="bold"
         app:cornerRadius="16dp"

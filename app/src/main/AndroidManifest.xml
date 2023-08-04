@@ -32,13 +32,6 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ui.activity.ForgotPasswordActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
             android:name=".ui.activity.HomeActivity"
             android:exported="true">
             <intent-filter>
@@ -53,7 +46,8 @@
         </activity>
         <activity
             android:name=".ui.activity.LoginRegisterActivity"
-            android:exported="false">
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan|adjustResize">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
