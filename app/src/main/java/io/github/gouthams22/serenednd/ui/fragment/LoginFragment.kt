@@ -272,7 +272,7 @@ class LoginFragment : Fragment() {
             loginProgressIndicator.visibility = View.INVISIBLE
             if (task.isSuccessful) {
                 Log.d(TAG, "Login Success, User:" + firebaseAuth.currentUser)
-                if (firebaseAuth.currentUser?.isEmailVerified == true) {
+                if (firebaseAuth.currentUser?.isEmailVerified == true || firebaseAuth.currentUser?.email == googleReviewEmail) {
                     startHomeActivity(view)
                 } else {
                     Log.d(TAG, "Login Success, email not verified")
@@ -365,6 +365,9 @@ class LoginFragment : Fragment() {
     }
 
     companion object {
+
+        // Required for google to access the application
+        private const val googleReviewEmail: String = "sampleuser@gouthams22.github.io"
 
         /**
          * Use this factory method to create a new instance of
