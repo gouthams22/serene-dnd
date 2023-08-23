@@ -197,6 +197,12 @@ class LoginFragment : Fragment() {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
                 handleResults(task, view)
             }
+
+            // Signing out of google (not firebase)
+            // so that the user can login with new google account
+            // If this is not present then the user will login with
+            // the same account without opening the list of google accounts
+            googleSignInClient.signOut()
         }
 
     private fun handleResults(task: Task<GoogleSignInAccount>, view: View?) {
