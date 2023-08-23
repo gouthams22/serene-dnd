@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -134,8 +133,6 @@ class AboutActivity : AppCompatActivity() {
      * @param isMailId whether the given url is a mail id or not
      */
     private fun openLink(url: String, isMailId: Boolean = false) {
-        Log.d(TAG, "openLink: $url isValidHttpsUrl? ${URLUtil.isHttpsUrl(url)}")
-
         if (isMailId) {
             // Mail intent
             val mailIntent =
@@ -209,7 +206,5 @@ class AboutActivity : AppCompatActivity() {
         private const val linkedInLink: String = "https://linkedin.com/in/gouthams0922"
         private const val gitHubLink: String = "https://github.com/gouthams22"
         private const val developerMailId: String = "goutham22dev@gmail.com"
-
-        private const val TAG: String = "AboutActivity"
     }
 }

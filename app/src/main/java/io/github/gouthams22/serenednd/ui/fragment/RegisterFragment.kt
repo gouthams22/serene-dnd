@@ -1,15 +1,14 @@
 package io.github.gouthams22.serenednd.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import io.github.gouthams22.serenednd.R
@@ -60,14 +59,12 @@ class RegisterFragment : Fragment() {
             disableInput(view)
             registerProgressIndicator.visibility = View.VISIBLE
             if (validateFields(regEmailField, regPasswordField, regConfirmPasswordField)) {
-                Log.d(TAG, "Username and Password field is in valid format")
                 registerAccount(
                     view,
                     regEmailField.text?.trim().toString(),
                     regPasswordField.text?.trim().toString()
                 )
             } else {
-                Log.d(TAG, "Username and Password field is in invalid format")
                 enableInput(view)
                 registerProgressIndicator.visibility = View.INVISIBLE
             }
@@ -91,32 +88,26 @@ class RegisterFragment : Fragment() {
             enableInput(view)
             registerProgressIndicator.visibility = View.INVISIBLE
             if (task.isSuccessful) {
-                Log.d(TAG, "Task successful" + task.result.user?.email)
                 task.result.user?.sendEmailVerification()
                     ?.addOnCompleteListener { verificationTask ->
                         if (verificationTask.isSuccessful) {
-                            Toast.makeText(
-                                view.context,
-                                "Registered successfully. Verification is sent to the registered email",
-                                Toast.LENGTH_SHORT
+                            Snackbar.make(
+                                view,
+                                "Registered successfully. Verification link is sent to your registered email",
+                                Snackbar.LENGTH_SHORT
                             ).show()
                         } else {
-                            Toast.makeText(
-                                view.context,
-                                "Registered successfully",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            Snackbar.make(view, "Registered successfully", Snackbar.LENGTH_SHORT)
+                                .show()
                         }
                     }
                 if (firebaseAuth.currentUser != null) {
                     firebaseAuth.signOut()
                 }
             } else if (task.isCanceled) {
-                Log.d(TAG, "Create user task is cancelled")
-                Toast.makeText(view.context, "Process is cancelled", Toast.LENGTH_SHORT).show()
+                Snackbar.make(view, "Process is cancelled", Snackbar.LENGTH_SHORT).show()
             } else {
-                Log.d(TAG, "Create user task failed")
-                Toast.makeText(view.context, "Registration failed!", Toast.LENGTH_SHORT).show()
+                Snackbar.make(view, "Registration failed!", Snackbar.LENGTH_SHORT).show()
             }
         }
     }
@@ -191,6 +182,5 @@ class RegisterFragment : Fragment() {
          */
         @JvmStatic
         fun newInstance() = RegisterFragment()
-        private const val TAG = "RegisterFragment"
     }
 }

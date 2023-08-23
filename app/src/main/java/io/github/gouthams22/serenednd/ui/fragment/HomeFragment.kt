@@ -8,7 +8,6 @@ import android.content.res.Resources
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -72,14 +71,12 @@ class HomeFragment : Fragment() {
     ) : CoroutineWorker(appContext, params) {
         private val currentContext = appContext
         override suspend fun doWork(): Result {
-            Log.d(TAG, "doWork: Doing Work")
             return try {
                 val notificationManager: NotificationManager =
                     currentContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
                 Result.success()
             } catch (e: Exception) {
-                Log.e(TAG, "doWork: ${e.printStackTrace()}")
                 Result.failure()
             }
         }
@@ -115,8 +112,6 @@ class HomeFragment : Fragment() {
         dndStateReceiver =
             DNDStateReceiver((view.context as HomeActivity).supportFragmentManager.fragments.last() as HomeFragment)
 
-        Log.d(TAG, "onViewCreated: ${firebaseAuth.currentUser != null}")
-
         val timeRootView: ConstraintLayout = view.findViewById(R.id.layout_time)
         val timeTextView: MaterialTextView = view.findViewById(R.id.text_time)
         timeTextView.text = timeDivisions[0]
@@ -126,17 +121,6 @@ class HomeFragment : Fragment() {
         timeSlider.stepSize = 1F
         timeSlider.value = 0F
         timeSlider.setLabelFormatter { value -> timeDivisions[value.toInt()] }
-        Log.d(TAG, "timeSlider: ${timeSlider.value}")
-        timeSlider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
-            override fun onStartTrackingTouch(slider: Slider) {
-                return
-            }
-
-            override fun onStopTrackingTouch(slider: Slider) {
-                Log.d(TAG, "timeSlider: ${timeSlider.value}")
-            }
-
-        })
         timeSlider.addOnChangeListener { _, value, _ ->
             timeTextView.text = timeDivisions[value.toInt()]
         }
@@ -144,7 +128,6 @@ class HomeFragment : Fragment() {
         // MaterialButtonToggleGroup
         val typeToggle: MaterialButtonToggleGroup = view.findViewById(R.id.type_toggle)
         typeToggle.addOnButtonCheckedListener { _, checkedId, isChecked ->
-            Log.d(TAG, "onButtonClick: ToggleGroup: ${dndType[dndTypeId.indexOf(checkedId)]}")
             if (isChecked)
                 when (checkedId) {
                     dndTypeId[0] -> {
@@ -165,7 +148,6 @@ class HomeFragment : Fragment() {
         val durationTextView: MaterialAutoCompleteTextView =
             view.findViewById(R.id.duration_auto_complete)
         durationTextView.setOnItemClickListener { _, _, position, _ ->
-            Log.d(TAG, "onViewCreated: Duration: ${dndDuration[position]}")
             when (position) {
                 // Always
                 0 -> {
@@ -190,7 +172,6 @@ class HomeFragment : Fragment() {
         // DND Image Button to toggle
         val dndButton: ImageButton = view.findViewById(R.id.button_dnd)
         dndButton.setOnClickListener {
-            Log.d(TAG, "onClick: dndButton")
             val isDndOn = isDndTurnedOn()
             if (isDndOn) {
                 // Turn off
@@ -204,7 +185,6 @@ class HomeFragment : Fragment() {
         // Preferences Data Store
         dndPreference = DNDPreference(view.context)
         dndPreference.typePreference.asLiveData().observe(viewLifecycleOwner) { value ->
-            Log.d(TAG, "DNDPreference: Type Preferences: $value")
             currentType = value
             when (value) {
                 "None" -> setTypePreferences(dndType[0])
@@ -222,7 +202,6 @@ class HomeFragment : Fragment() {
             }
         }
         dndPreference.durationPreference.asLiveData().observe(viewLifecycleOwner) { value ->
-            Log.d(TAG, "dndPreference: Duration Preferences: $value")
             currentDuration = value
             timeRootView.visibility = View.GONE
             when (value) {
@@ -249,18 +228,17 @@ class HomeFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        Log.d(TAG, "onStop: dndStateReceiver started")
+
         context?.registerReceiver(
             dndStateReceiver,
             IntentFilter(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED)
         )
         updateDnd()
-        Log.d(TAG, "onStart: DND state: ${notificationManager.currentInterruptionFilter}")
     }
 
     override fun onStop() {
         super.onStop()
-        Log.d(TAG, "onStop: dndStateReceiver stopped")
+
         context?.unregisterReceiver(dndStateReceiver)
     }
 
@@ -274,7 +252,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun turnDndOn(view: View) {
-        Log.d(TAG, "turnDndOn: turning on")
         // Disable Inputs
         updateInputAccessibility(view, false)
         when (currentDuration) {
@@ -311,7 +288,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun turnDndOff(view: View) {
-        Log.d(TAG, "turnDndOn: turning off")
         // Enable Inputs
         updateInputAccessibility(view, true)
         WorkManager.getInstance(view.context).cancelAllWorkByTag("serene_time")
@@ -319,14 +295,12 @@ class HomeFragment : Fragment() {
     }
 
     private fun setTypePreferences(type: String) {
-        Log.d(TAG, "setTypePreferences: $type")
         lifecycleScope.launch {
             dndPreference.storeTypePreference(type)
         }
     }
 
     private fun setDurationPreferences(duration: String) {
-        Log.d(TAG, "setDurationPreferences: $duration")
         lifecycleScope.launch {
             dndPreference.storeDurationPreference(duration)
         }
@@ -338,7 +312,6 @@ class HomeFragment : Fragment() {
      * @param colorId Id of color to be assigned to dnd button
      */
     private fun setButtonStrokeColor(colorId: Int) {
-        Log.d(TAG, "setButtonStrokeColor: $colorId")
         val dndButton: ImageButton? = view?.findViewById(R.id.button_dnd)
         val rippleDrawable: RippleDrawable = dndButton?.background as RippleDrawable
         val shapeDrawable = rippleDrawable.getDrawable(0) as GradientDrawable
@@ -353,7 +326,6 @@ class HomeFragment : Fragment() {
      * @param colorId Id of color to be assigned to dnd button
      */
     private fun setButtonSolidColor(colorId: Int) {
-        Log.d(TAG, "setButtonSolidColor: $colorId")
         val dndButton: ImageButton? = view?.findViewById(R.id.button_dnd)
         val rippleDrawable: RippleDrawable = dndButton?.background as RippleDrawable
         val shapeDrawable = rippleDrawable.getDrawable(0) as GradientDrawable
@@ -391,6 +363,5 @@ class HomeFragment : Fragment() {
          */
         @JvmStatic
         fun newInstance() = HomeFragment()
-        private const val TAG = "HomeFragment"
     }
 }

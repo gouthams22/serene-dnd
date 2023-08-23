@@ -4,7 +4,6 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -116,17 +115,6 @@ class PriorityFragment : Fragment() {
             it.isEnabled = false
             val popupMenu = PopupMenu(it.context, it)
             popupMenu.setOnMenuItemClickListener { item ->
-                Log.d(
-                    TAG, "onViewCreated: Calls: ${
-                        when (item.itemId) {
-                            R.id.item_anyone -> statusCalls[0]
-                            R.id.item_contacts -> statusCalls[1]
-                            R.id.item_starred -> statusCalls[2]
-                            R.id.item_none -> statusCalls[3]
-                            else -> "Error!"
-                        }
-                    }"
-                )
 
                 // Ensuring calls category bit is always turned on, so that calls category bit can be turned off (at succeeding "when" block) only when option "none" is clicked
                 if (priorityOptions.priorityCategories and NotificationManager.Policy.PRIORITY_CATEGORY_CALLS != NotificationManager.Policy.PRIORITY_CATEGORY_CALLS)
@@ -169,17 +157,6 @@ class PriorityFragment : Fragment() {
             it.isEnabled = false
             val popupMenu = PopupMenu(it.context, it)
             popupMenu.setOnMenuItemClickListener { item ->
-                Log.d(
-                    TAG, "onViewCreated: Messages: ${
-                        when (item.itemId) {
-                            R.id.item_anyone -> statusCalls[0]
-                            R.id.item_contacts -> statusCalls[1]
-                            R.id.item_starred -> statusCalls[2]
-                            R.id.item_none -> statusCalls[3]
-                            else -> "Error!"
-                        }
-                    }"
-                )
 
                 // Ensuring messages category bit is always turned on, so that messages category bit can be turned off (at succeeding "when" block) only when option "none" is clicked
                 if (priorityOptions.priorityCategories and NotificationManager.Policy.PRIORITY_CATEGORY_MESSAGES != NotificationManager.Policy.PRIORITY_CATEGORY_MESSAGES)
@@ -228,16 +205,6 @@ class PriorityFragment : Fragment() {
                 it.isEnabled = false
                 val popupMenu = PopupMenu(it.context, it)
                 popupMenu.setOnMenuItemClickListener { item ->
-                    Log.d(
-                        TAG, "onViewCreated: Conversations: ${
-                            when (item.itemId) {
-                                R.id.menu_conversations_all -> statusConversations[0]
-                                R.id.menu_conversations_priority -> statusConversations[1]
-                                R.id.menu_conversations_none -> statusConversations[2]
-                                else -> "Error!"
-                            }
-                        }"
-                    )
 
                     if (priorityOptions.priorityCategories and NotificationManager.Policy.PRIORITY_CATEGORY_CONVERSATIONS != NotificationManager.Policy.PRIORITY_CATEGORY_CONVERSATIONS)
                         priorityOptions.priorityCategories += NotificationManager.Policy.PRIORITY_CATEGORY_CONVERSATIONS
@@ -273,7 +240,6 @@ class PriorityFragment : Fragment() {
         }
 
         remindersSwitch.setOnCheckedChangeListener { _, b ->
-            Log.d(TAG, "onViewCreated: reminderSwitch: $b")
             priorityOptions.priorityCategories +=
                 (if (b && priorityOptions.priorityCategories and NotificationManager.Policy.PRIORITY_CATEGORY_REMINDERS != NotificationManager.Policy.PRIORITY_CATEGORY_REMINDERS)
                     1
@@ -284,7 +250,6 @@ class PriorityFragment : Fragment() {
         }
 
         eventsSwitch.setOnCheckedChangeListener { _, b ->
-            Log.d(TAG, "onViewCreated: eventsSwitch: $b")
 //            priorityOptions.priorityCategories += (if (b) 1 else -1) * NotificationManager.Policy.PRIORITY_CATEGORY_EVENTS
             priorityOptions.priorityCategories +=
                 (if (b && priorityOptions.priorityCategories and NotificationManager.Policy.PRIORITY_CATEGORY_EVENTS != NotificationManager.Policy.PRIORITY_CATEGORY_EVENTS)
@@ -299,7 +264,6 @@ class PriorityFragment : Fragment() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
 
             alarmsSwitch.setOnCheckedChangeListener { _, b ->
-                Log.d(TAG, "onViewCreated: alarmsSwitch: $b")
 //                priorityOptions.priorityCategories += (if (b) 1 else -1) * NotificationManager.Policy.PRIORITY_CATEGORY_ALARMS
                 priorityOptions.priorityCategories +=
                     (if (b && priorityOptions.priorityCategories and NotificationManager.Policy.PRIORITY_CATEGORY_ALARMS != NotificationManager.Policy.PRIORITY_CATEGORY_ALARMS)
@@ -311,7 +275,6 @@ class PriorityFragment : Fragment() {
             }
 
             mediaSwitch.setOnCheckedChangeListener { _, b ->
-                Log.d(TAG, "onViewCreated: mediaSwitch: $b")
 //                priorityOptions.priorityCategories += (if (b) 1 else -1) * NotificationManager.Policy.PRIORITY_CATEGORY_MEDIA
                 priorityOptions.priorityCategories +=
                     (if (b && priorityOptions.priorityCategories and NotificationManager.Policy.PRIORITY_CATEGORY_MEDIA != NotificationManager.Policy.PRIORITY_CATEGORY_MEDIA)
@@ -323,7 +286,6 @@ class PriorityFragment : Fragment() {
             }
 
             systemSwitch.setOnCheckedChangeListener { _, b ->
-                Log.d(TAG, "onViewCreated: systemSwitch: $b")
 //                priorityOptions.priorityCategories += (if (b) 1 else -1) * NotificationManager.Policy.PRIORITY_CATEGORY_SYSTEM
                 priorityOptions.priorityCategories +=
                     (if (b && priorityOptions.priorityCategories and NotificationManager.Policy.PRIORITY_CATEGORY_SYSTEM != NotificationManager.Policy.PRIORITY_CATEGORY_SYSTEM)
@@ -347,10 +309,6 @@ class PriorityFragment : Fragment() {
         super.onResume()
         priorityOptions.priorityCategories =
             notificationManager.notificationPolicy.priorityCategories
-        Log.d(
-            TAG,
-            "onResume: ${priorityOptions.priorityCategories and NotificationManager.Policy.PRIORITY_CATEGORY_REMINDERS == NotificationManager.Policy.PRIORITY_CATEGORY_REMINDERS}"
-        )
         // CALLS Settings
         if (priorityOptions.priorityCategories and NotificationManager.Policy.PRIORITY_CATEGORY_CALLS == NotificationManager.Policy.PRIORITY_CATEGORY_CALLS)
             callsStatusText.text = when (priorityOptions.priorityCallSenders) {
@@ -388,34 +346,26 @@ class PriorityFragment : Fragment() {
         }
 
         // PRIORITY_CATEGORY_REMINDERS
-        if (priorityOptions.priorityCategories and NotificationManager.Policy.PRIORITY_CATEGORY_REMINDERS == NotificationManager.Policy.PRIORITY_CATEGORY_REMINDERS) {
-            Log.d(TAG, "onResume: Priority: Reminders")
-            remindersSwitch.isChecked = true
-        } else remindersSwitch.isChecked = false
+        remindersSwitch.isChecked =
+            priorityOptions.priorityCategories and NotificationManager.Policy.PRIORITY_CATEGORY_REMINDERS == NotificationManager.Policy.PRIORITY_CATEGORY_REMINDERS
 
         // PRIORITY_CATEGORY_EVENTS
-        if (priorityOptions.priorityCategories and NotificationManager.Policy.PRIORITY_CATEGORY_EVENTS == NotificationManager.Policy.PRIORITY_CATEGORY_EVENTS) {
-            Log.d(TAG, "onCreateView: Priority: Events")
-            eventsSwitch.isChecked = true
-        } else eventsSwitch.isChecked = false
+        eventsSwitch.isChecked =
+            priorityOptions.priorityCategories and NotificationManager.Policy.PRIORITY_CATEGORY_EVENTS == NotificationManager.Policy.PRIORITY_CATEGORY_EVENTS
 
-        // PRIORITY_CATEGORY_ALARMS
-        if (priorityOptions.priorityCategories and NotificationManager.Policy.PRIORITY_CATEGORY_ALARMS == NotificationManager.Policy.PRIORITY_CATEGORY_ALARMS) {
-            Log.d(TAG, "onCreateView: Priority: Alarms")
-            alarmsSwitch.isChecked = true
-        } else alarmsSwitch.isChecked = false
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            // PRIORITY_CATEGORY_ALARMS
+            alarmsSwitch.isChecked =
+                priorityOptions.priorityCategories and NotificationManager.Policy.PRIORITY_CATEGORY_ALARMS == NotificationManager.Policy.PRIORITY_CATEGORY_ALARMS
 
-        // PRIORITY_CATEGORY_MEDIA
-        if (priorityOptions.priorityCategories and NotificationManager.Policy.PRIORITY_CATEGORY_MEDIA == NotificationManager.Policy.PRIORITY_CATEGORY_MEDIA) {
-            Log.d(TAG, "onCreateView: Priority: Media")
-            mediaSwitch.isChecked = true
-        } else mediaSwitch.isChecked = false
+            // PRIORITY_CATEGORY_MEDIA
+            mediaSwitch.isChecked =
+                (priorityOptions.priorityCategories and NotificationManager.Policy.PRIORITY_CATEGORY_MEDIA) == NotificationManager.Policy.PRIORITY_CATEGORY_MEDIA
 
-        // PRIORITY_CATEGORY_SYSTEM
-        if (priorityOptions.priorityCategories and NotificationManager.Policy.PRIORITY_CATEGORY_SYSTEM == NotificationManager.Policy.PRIORITY_CATEGORY_SYSTEM) {
-            Log.d(TAG, "onCreateView: Priority: System")
-            systemSwitch.isChecked = true
-        } else systemSwitch.isChecked = false
+            // PRIORITY_CATEGORY_SYSTEM
+            systemSwitch.isChecked =
+                priorityOptions.priorityCategories and NotificationManager.Policy.PRIORITY_CATEGORY_SYSTEM == NotificationManager.Policy.PRIORITY_CATEGORY_SYSTEM
+        }
     }
 
     companion object {
@@ -427,8 +377,6 @@ class PriorityFragment : Fragment() {
          */
         @JvmStatic
         fun newInstance() = PriorityFragment()
-
-        private const val TAG = "PriorityFragment"
 
     }
 

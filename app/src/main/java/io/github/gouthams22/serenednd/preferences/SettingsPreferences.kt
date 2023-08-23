@@ -1,7 +1,6 @@
 package io.github.gouthams22.serenednd.preferences
 
 import android.content.Context
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -19,7 +18,6 @@ private val Context.settingsDataStore: DataStore<Preferences> by preferencesData
 class SettingsPreferences(lifecycleCoroutineScope: LifecycleCoroutineScope, context: Context) :
     PreferenceDataStore() {
     companion object {
-        private const val TAG = "SettingsPreferences"
         val APP_THEME = stringPreferencesKey("night_theme")
     }
 
@@ -32,7 +30,6 @@ class SettingsPreferences(lifecycleCoroutineScope: LifecycleCoroutineScope, cont
      * @param value value to be stored for the given key
      */
     override fun putString(key: String?, value: String?) {
-        Log.d(TAG, "putString: $value")
         scope
             .launch {
                 currentContext.settingsDataStore.edit {
@@ -40,7 +37,6 @@ class SettingsPreferences(lifecycleCoroutineScope: LifecycleCoroutineScope, cont
                 }
             }
             .invokeOnCompletion {
-                Log.d(TAG, "putString: ${it?.stackTrace ?: "$value stored successfully"}")
             }
     }
 
@@ -59,7 +55,6 @@ class SettingsPreferences(lifecycleCoroutineScope: LifecycleCoroutineScope, cont
      * @return Day/Night theme preference
      */
     suspend fun getTheme(): String {
-        Log.d(TAG, "getTheme: invoked")
         return currentContext.settingsDataStore.data.first()[APP_THEME]
             ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM.toString()
     }
