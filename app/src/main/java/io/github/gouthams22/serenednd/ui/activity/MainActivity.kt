@@ -3,7 +3,6 @@ package io.github.gouthams22.serenednd.ui.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,15 +15,9 @@ import io.github.gouthams22.serenednd.R
 
 class MainActivity : AppCompatActivity() {
 
-    companion object {
-        private const val TAG = "MainActivity"
-    }
-
     private lateinit var firebaseAuth: FirebaseAuth
     private val handleBack =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            Log.d(TAG, "MainActivity: Inside Activity Result is " + result.resultCode.toString())
-            Log.d(TAG, "Default value of Result Ok is " + Activity.RESULT_OK.toString())
             if (result.resultCode == Activity.RESULT_OK) {
                 finish()
             }
@@ -45,11 +38,9 @@ class MainActivity : AppCompatActivity() {
 
         //check if User is logged in
         if (isUserLoggedIn()) {
-            Log.d(TAG, "onCreate: User logged in")
             progressIndicator.visibility = View.INVISIBLE
             startActivity(Intent(this, HomeActivity::class.java))
         } else {
-            Log.d(TAG, "onCreate: User not logged in")
             progressIndicator.visibility = View.INVISIBLE
 
             //set onclick to login/register page if no user present

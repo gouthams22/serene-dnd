@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -32,17 +31,12 @@ Notes:
  */
 class HomeActivity : AppCompatActivity() {
 
-    companion object {
-        private const val TAG = "HomeActivity"
-    }
-
     private lateinit var firebaseAuth: FirebaseAuth
 
     // ActivityResultContracts for Opening Intent to DND Access Settings
     private val requestDNDSettingsActivityResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        Log.d(TAG, "requestDNDPermission: $result")
+    ) { _ ->
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,10 +51,8 @@ class HomeActivity : AppCompatActivity() {
         materialToolbar.inflateMenu(R.menu.home_menu)
         // Log out Menu Button
         materialToolbar.menu.findItem(R.id.logout_menu_item).setOnMenuItemClickListener {
-            Log.d(TAG, "onCreate: Log out button clicked")
             it.isEnabled = false
             firebaseAuth.signOut()
-            Log.d(TAG, if (firebaseAuth.currentUser != null) "Still signed in" else "Nope")
             startActivity(Intent(this, MainActivity::class.java))
             finish()
             it.isEnabled = true
@@ -68,7 +60,6 @@ class HomeActivity : AppCompatActivity() {
         }
         // Settings Menu Button
         materialToolbar.menu.findItem(R.id.settings_menu_item).setOnMenuItemClickListener {
-            Log.d(TAG, "onCreate: Settings button clicked")
             it.isEnabled = false
             startActivity(Intent(applicationContext, SettingsActivity::class.java))
             it.isEnabled = true
@@ -76,7 +67,6 @@ class HomeActivity : AppCompatActivity() {
         }
         //About Menu Button
         materialToolbar.menu.findItem(R.id.about_menu_item).setOnMenuItemClickListener {
-            Log.d(TAG, "onCreate: About button clicked")
             it.isEnabled = false
             startActivity(Intent(applicationContext, AboutActivity::class.java))
             it.isEnabled = true
@@ -88,15 +78,12 @@ class HomeActivity : AppCompatActivity() {
 
         // Check and redirect if no user is present
         redirectIfNoUser()
-        val isEmailVerified = firebaseAuth.currentUser?.isEmailVerified
-        Log.d(TAG, "isEmailVerified: $isEmailVerified")
 
         // Bottom Navigation
         val bottomNavigationView: BottomNavigationView = findViewById(R.id.home_navbar)
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.home -> {
-                    Log.d(TAG, "navbar: ${getString(R.string.home)}")
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragment_container_view_home, HomeFragment.newInstance())
                         .commit()
@@ -104,7 +91,6 @@ class HomeActivity : AppCompatActivity() {
                 }
 
                 R.id.priority -> {
-                    Log.d(TAG, "navbar: ${getString(R.string.priority)}")
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragment_container_view_home, PriorityFragment.newInstance())
                         .commit()
@@ -112,17 +98,14 @@ class HomeActivity : AppCompatActivity() {
                 }
 
                 R.id.location -> {
-                    Log.d(TAG, "navbar: ${getString(R.string.location)}")
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragment_container_view_home, LocationFragment.newInstance())
                         .commit()
                     true
                 }
 
-                else -> {
-                    Log.d(TAG, "navbar: False")
-                    false
-                }
+                else -> false
+
             }
         }
         // Setting default view when activity is opened
@@ -144,7 +127,6 @@ class HomeActivity : AppCompatActivity() {
     private fun checkPermission(): Boolean {
         val notificationManager: NotificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        Log.d(TAG, "checkPermission: ${notificationManager.isNotificationPolicyAccessGranted}")
         return notificationManager.isNotificationPolicyAccessGranted
     }
 
@@ -164,14 +146,12 @@ class HomeActivity : AppCompatActivity() {
                     // above parameter(dialog,id)
                     // User clicked OK button
                     dialog.dismiss()
-                    Log.d(TAG, "dialogResult(): Yes")
                     openDNDSettings()
                 }
                 setNegativeButton("No") { dialog, _ ->
                     // above parameter(dialog,id)
                     // User clicked No
                     dialog.dismiss()
-                    Log.d(TAG, "dialogResult(): No")
                     finish()
                 }
                 setCancelable(false)
@@ -203,7 +183,6 @@ class HomeActivity : AppCompatActivity() {
                 AppCompatDelegate.setDefaultNightMode(settingsPreferences.getTheme().toInt())
             }
             .invokeOnCompletion {
-                Log.d(TAG, "setNightMode: ${it?.stackTrace ?: "Completed"}")
             }
     }
 }

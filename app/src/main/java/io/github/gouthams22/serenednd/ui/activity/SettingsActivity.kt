@@ -1,7 +1,6 @@
 package io.github.gouthams22.serenednd.ui.activity
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -47,7 +46,6 @@ class SettingsActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
 
         // User profile picture
-        Log.d(TAG, "onCreate: User pfp:${firebaseAuth.currentUser?.photoUrl}")
         val imageView: ImageView = findViewById(R.id.image_user_logo)
         imageView.load(firebaseAuth.currentUser?.photoUrl) {
             placeholder(R.drawable.ic_outline_account_circle_72)
@@ -59,16 +57,13 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         // User account email ID
-        Log.d(TAG, "onCreate: User EmailID: ${firebaseAuth.currentUser?.email ?: "error"}")
         val emailAccountTextView: MaterialTextView = findViewById(R.id.text_email_account)
         emailAccountTextView.text = firebaseAuth.currentUser?.email ?: "error"
 
         val logoutButton: MaterialButton = findViewById(R.id.button_logout_settings)
         logoutButton.setOnClickListener {
             it.isEnabled = false
-            Log.d(TAG, "onCreate: Log out button clicked")
             firebaseAuth.signOut()
-            Log.d(TAG, if (firebaseAuth.currentUser != null) "Still signed in" else "Nope")
             finish()
             it.isEnabled = true
         }
@@ -76,10 +71,6 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     class SettingsFragment : PreferenceFragmentCompat() {
-
-        companion object {
-            private const val TAG = "SettingsFragment"
-        }
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             val settingsPreferences = context?.let { SettingsPreferences(lifecycleScope, it) }
@@ -108,7 +99,6 @@ class SettingsActivity : AppCompatActivity() {
             // Handle Night Mode ListPreference click
             nightModePreference?.setOnPreferenceChangeListener { _, newValue ->
                 // Uncomment when feature is complete
-                Log.d(TAG, "onCreatePreferences: $newValue")
                 lifecycleScope
                     .launch {
                         settingsPreferences?.storeTheme(newValue.toString())
@@ -117,22 +107,13 @@ class SettingsActivity : AppCompatActivity() {
                         if (it == null) {
                             // Job successful, no error; update night mode
                             AppCompatDelegate.setDefaultNightMode(newValue.toString().toInt())
-                            Log.d(TAG, "onCreatePreferences: Updated night mode theme preferences")
                         } else {
                             // Job unsuccessful, handle error
-                            Log.d(
-                                TAG,
-                                "onCreatePreferences: couldn't update theme preference; Stacktrace: ${it.stackTrace}"
-                            )
                         }
                     }
                 true
             }
 
         }
-    }
-
-    companion object {
-        private const val TAG = "SettingsActivity"
     }
 }

@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +21,7 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -100,10 +100,6 @@ class LoginFragment : Fragment() {
             disableInput(view)
             loginProgressIndicator.visibility = View.VISIBLE
             val isValid = validateFields(loginEmailField, loginPasswordField)
-            Log.d(
-                TAG,
-                if (isValid) "Login Form fields are in valid state" else "Login Form is invalid"
-            )
             if (isValid) authenticateFirebase(
                 view,
                 loginEmailField,
@@ -142,13 +138,8 @@ class LoginFragment : Fragment() {
             disableDialogInput(passwordAlertDialog)
 
             if (isEmailValid(forgotEmailEditText?.text?.trim().toString())) {
-                Log.d(TAG, "isEmailValid: true")
                 firebaseAuth.sendPasswordResetEmail(forgotEmailEditText?.text?.trim().toString())
                     .addOnCompleteListener { task ->
-                        Log.d(
-                            TAG,
-                            "FirebaseAuth password reset task: " + task.isSuccessful.toString()
-                        )
 
                         // Releasing email field and button to be able to interact
                         enableDialogInput(passwordAlertDialog)
@@ -156,10 +147,10 @@ class LoginFragment : Fragment() {
                         // Displaying if task is successful
                         if (task.isSuccessful) {
                             forgotEmailEditText?.error = null
-                            Toast.makeText(
-                                context,
+                            Snackbar.make(
+                                view,
                                 "Email sent to the registered mail successfully",
-                                Toast.LENGTH_LONG
+                                Snackbar.LENGTH_LONG
                             ).show()
                             passwordAlertDialog.dismiss()
                         } else
@@ -224,14 +215,11 @@ class LoginFragment : Fragment() {
      */
     private fun updateFirebaseCredential(account: GoogleSignInAccount, view: View?) {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-        Log.d(TAG, "update Firebase credential")
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
-            Log.d(TAG, "Successful authentication")
             startHomeActivity(view)
         }
             .addOnCanceledListener {
-                Toast.makeText(view?.context, "Canceled", Toast.LENGTH_SHORT).show()
-                Log.d(TAG, "Canceled Firebase Authentication")
+                if (view != null) Snackbar.make(view, "Canceled", Snackbar.LENGTH_SHORT).show()
             }
     }
 
@@ -241,7 +229,6 @@ class LoginFragment : Fragment() {
     private fun startHomeActivity(view: View?) {
         //Add parameters or other feature if necessary
         val loginRegisterActivity = view?.context as LoginRegisterActivity
-        Log.d(TAG, "startHomeActivity: " + loginRegisterActivity.parent.toString())
         val intent = Intent(view.context, HomeActivity::class.java)
         (view.context as LoginRegisterActivity).setResult(
             AppCompatActivity.RESULT_OK,
@@ -271,24 +258,22 @@ class LoginFragment : Fragment() {
             enableInput(view)
             loginProgressIndicator.visibility = View.INVISIBLE
             if (task.isSuccessful) {
-                Log.d(TAG, "Login Success, User:" + firebaseAuth.currentUser)
                 if (firebaseAuth.currentUser?.isEmailVerified == true || firebaseAuth.currentUser?.email == googleReviewEmail) {
                     startHomeActivity(view)
                 } else {
-                    Log.d(TAG, "Login Success, email not verified")
                     task.result.user?.sendEmailVerification()
                         ?.addOnCompleteListener { verificationTask ->
                             if (verificationTask.isSuccessful) {
-                                Toast.makeText(
-                                    view.context,
+                                Snackbar.make(
+                                    view,
                                     "Email couldn't be verified, please verify your email sent again to your email address",
-                                    Toast.LENGTH_SHORT
+                                    Snackbar.LENGTH_SHORT
                                 ).show()
                             } else {
-                                Toast.makeText(
-                                    view.context,
+                                Snackbar.make(
+                                    view,
                                     "Email couldn't be verified, please contact developer",
-                                    Toast.LENGTH_SHORT
+                                    Snackbar.LENGTH_SHORT
                                 ).show()
                             }
                         }
@@ -297,8 +282,7 @@ class LoginFragment : Fragment() {
                     }
                 }
             } else {
-                Log.d(TAG, "Login Unsuccessful")
-                Toast.makeText(view.context, "Login Unsuccessful", Toast.LENGTH_SHORT).show()
+                Snackbar.make(view, "Login Unsuccessful", Snackbar.LENGTH_SHORT).show()
 
                 // Login unsuccessful, reset password field
                 passwordField.text = null
@@ -377,6 +361,5 @@ class LoginFragment : Fragment() {
          */
         @JvmStatic
         fun newInstance() = LoginFragment()
-        private const val TAG = "LoginFragment"
     }
 }
