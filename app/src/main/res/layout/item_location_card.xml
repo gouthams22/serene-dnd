@@ -12,10 +12,12 @@
         android:paddingHorizontal="24dp"
         android:paddingVertical="5dp">
 
-        <com.google.android.material.textview.MaterialTextView
+        <ImageView
             android:id="@+id/text_serial_no"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/drag_button"
+            android:src="@drawable/ic_outline_drag_handle_24"
             android:text="@string/placeholder_number"
             android:textSize="56sp"
             app:layout_constraintBottom_toBottomOf="parent"

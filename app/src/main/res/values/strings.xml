@@ -231,9 +231,11 @@
     </body>
 </html>]]></string>
 
+    <!--  Location Fragment  -->
     <string name="edit_location">Edit location</string>
     <string name="delete_location">Delete location</string>
     <string name="placeholder_number">1</string>
     <string name="placeholder_coordinates">10.78260276347789, 79.13114119482583</string>
+    <string name="drag_button">Drag button</string>
 
 </resources>
