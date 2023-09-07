@@ -237,5 +237,14 @@
     <string name="placeholder_number">1</string>
     <string name="placeholder_coordinates">10.78260276347789, 79.13114119482583</string>
     <string name="drag_button">Drag button</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="add_location">Add Location</string>
+    <string name="add_location_description">Enter the latitude and longitude of the location</string>
+    <string name="location_field_empty_error_message">Latitude and Longitude can\'t be blank or empty</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
+    <string name="name">Name</string>
+    <string name="list_of_locations">List of Locations</string>
 
 </resources>
