@@ -1,20 +1,26 @@
 package io.github.gouthams22.serenednd.ui.activity
 
+import android.Manifest
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import io.github.gouthams22.serenednd.R
+import io.github.gouthams22.serenednd.preferences.DNDPreference
 import io.github.gouthams22.serenednd.preferences.SettingsPreferences
 import io.github.gouthams22.serenednd.ui.fragment.HomeFragment
 import io.github.gouthams22.serenednd.ui.fragment.LocationFragment
@@ -37,7 +43,57 @@ class HomeActivity : AppCompatActivity() {
     private val requestDNDSettingsActivityResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { _ ->
+        // Calls Location permissions after DND permission call
+        requestLocationPermission()
     }
+
+    private val locationPermissionResultLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            val dndPreference = DNDPreference(this)
+            when {
+                permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
+                    // Precise location access granted.
+                    lifecycleScope.launch {
+                        dndPreference.storeDurationPreference(Manifest.permission.ACCESS_FINE_LOCATION)
+                    }
+                }
+
+                permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
+                    // TODO: block location feature
+                    lifecycleScope.launch {
+                        val prevStatus = dndPreference.getLocationStatus()
+                        if (prevStatus.isBlank()) {
+                            Snackbar.make(
+                                findViewById(R.id.fragment_container_view_home),
+                                getString(R.string.requires_precision_msg),
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                            dndPreference.storeLocationStatusPreference(Manifest.permission.ACCESS_COARSE_LOCATION)
+                        } else if (prevStatus == Manifest.permission.ACCESS_COARSE_LOCATION) {
+                            Snackbar.make(
+                                findViewById(R.id.fragment_container_view_home),
+                                getString(R.string.location_denied_msg),
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                            dndPreference.storeLocationStatusPreference("None")
+                        }
+                    }
+                }
+
+                else -> {
+                    // No location access granted.
+                    // TODO: block location feature
+                    Snackbar.make(
+                        findViewById(R.id.fragment_container_view_home),
+                        getString(R.string.location_denied_msg),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                    lifecycleScope.launch {
+                        dndPreference.storeLocationStatusPreference("None")
+                    }
+                }
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,6 +170,15 @@ class HomeActivity : AppCompatActivity() {
 
         // App Night mode
         setNightMode()
+
+        // LocationStatus Preference live update
+        val dndPreference = DNDPreference(this)
+        dndPreference.locationStatusPreference.asLiveData().observe(this) { status ->
+            if (status.isBlank() || status == Manifest.permission.ACCESS_COARSE_LOCATION) {
+                requestLocationPermission()
+            }
+        }
+
     }
 
     override fun onResume() {
@@ -121,47 +186,55 @@ class HomeActivity : AppCompatActivity() {
         // If no user present, return to get started page
         redirectIfNoUser()
         requestRequiredPermission()
-
-    }
-
-    private fun checkPermission(): Boolean {
-        val notificationManager: NotificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        return notificationManager.isNotificationPolicyAccessGranted
     }
 
     private fun requestRequiredPermission() {
-        if (!checkPermission())
-            requestDNDPermission()
+        when {
+            // DND permission
+            !(getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).isNotificationPolicyAccessGranted -> requestDNDPermission()
+        }
     }
 
     private fun requestDNDPermission() {
-        val alertDialog: AlertDialog = let {
-            val builder = AlertDialog.Builder(it)
-            builder.apply {
-                setTitle("This application requires DND access to provide you appropriate services.")
-                setPositiveButton(
-                    "Give DND Access"
-                ) { dialog, _ ->
-                    // above parameter(dialog,id)
-                    // User clicked OK button
-                    dialog.dismiss()
-                    openDNDSettings()
-                }
-                setNegativeButton("No") { dialog, _ ->
-                    // above parameter(dialog,id)
-                    // User clicked No
-                    dialog.dismiss()
-                    finish()
-                }
-                setCancelable(false)
+        val alertDialog = MaterialAlertDialogBuilder(this).apply {
+            setTitle(getString(R.string.dnd_permission_title))
+            setMessage(getString(R.string.dnd_permission_message))
+            setPositiveButton(getString(R.string.permission_give_access)) { dialog, _ ->
+                // above parameter(dialog,id)
+                // User clicked OK button
+                dialog.dismiss()
+                openDNDSettings()
             }
-            // Create the AlertDialog
-            builder.create()
+            setNegativeButton(getString(R.string.no)) { dialog, _ ->
+                // above parameter(dialog,id)
+                // User clicked No
+                dialog.dismiss()
+                finish()
+            }
+            setCancelable(false)
         }
+            //Create Alert Dialog before displaying
+            .create()
 
         // Displaying alert dialog
         alertDialog.show()
+    }
+
+    private fun requestLocationPermission() {
+
+        if ((getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).isNotificationPolicyAccessGranted
+            && ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission_group.LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            locationPermissionResultLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
     }
 
     private fun openDNDSettings() {

@@ -2,6 +2,12 @@
     <!--  Home Activity (opening screen)  -->
     <string name="app_name">Serene DND</string>
     <string name="get_started">Get Started</string>
+    <string name="dnd_permission_title">Access to DND services</string>
+    <string name="dnd_permission_message">This application requires DND access to provide you appropriate services. Access to DND is core to this application.</string>
+    <string name="permission_give_access">Give Access</string>
+    <string name="requires_precision_msg">This application requires precise location</string>
+    <string name="location_denied_msg">You can still use the application but some functions are limited</string>
+    <string name="no">No</string>
 
     <!--  Login/Register Activity  -->
     <string name="app_logo">App logo</string>
