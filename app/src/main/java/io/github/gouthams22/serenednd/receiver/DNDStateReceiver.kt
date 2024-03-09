@@ -1,4 +1,4 @@
-package io.github.gouthams22.serenednd.ui.receiver
+package io.github.gouthams22.serenednd.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context

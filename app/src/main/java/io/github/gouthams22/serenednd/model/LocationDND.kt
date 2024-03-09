@@ -1,8 +1,8 @@
 package io.github.gouthams22.serenednd.model
 
 class LocationDND(
-    private val latitude: Double,
-    private val longitude: Double,
+    val latitude: Double,
+    val longitude: Double,
     val name: String = ""
 ) {
     val coordinateText: String

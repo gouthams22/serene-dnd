@@ -5,9 +5,11 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
@@ -47,6 +49,17 @@ class HomeActivity : AppCompatActivity() {
         requestLocationPermission()
     }
 
+//    // ActivityResultContracts for Opening Intent to Background Location Access Settings
+//    private val requestLocationSettingsActivityResultLauncher = registerForActivityResult(
+//        ActivityResultContracts.StartActivityForResult()
+//    ) { _ -> }
+
+    private val requestLocationSettingsActivityResultLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { result ->
+
+    }
+
     private val locationPermissionResultLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             val dndPreference = DNDPreference(this)
@@ -54,7 +67,7 @@ class HomeActivity : AppCompatActivity() {
                 permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
                     // Precise location access granted.
                     lifecycleScope.launch {
-                        dndPreference.storeDurationPreference(Manifest.permission.ACCESS_FINE_LOCATION)
+                        dndPreference.storeLocationStatusPreference(Manifest.permission.ACCESS_FINE_LOCATION)
                     }
                 }
 
@@ -176,6 +189,8 @@ class HomeActivity : AppCompatActivity() {
         dndPreference.locationStatusPreference.asLiveData().observe(this) { status ->
             if (status.isBlank() || status == Manifest.permission.ACCESS_COARSE_LOCATION) {
                 requestLocationPermission()
+            } else if (status == Manifest.permission.ACCESS_FINE_LOCATION && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                requestBackgroundPermission()
             }
         }
 
@@ -235,6 +250,32 @@ class HomeActivity : AppCompatActivity() {
                 )
             )
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    private fun requestBackgroundPermission() {
+        val dndPreference = DNDPreference(this)
+        val alertDialog = MaterialAlertDialogBuilder(this).apply {
+            setTitle("Background Location")
+            setMessage("To use the location based DND we require you to access background location to provide you timely DND updates. You can still use Serene with limited features.\nSelect \"${packageManager.backgroundPermissionOptionLabel}\" in the settings to provide access.")
+            setNegativeButton(getString(R.string.no)) { dialog, _ ->
+                Snackbar.make(
+                    findViewById(R.id.fragment_container_view_home),
+                    getString(R.string.location_denied_msg),
+                    Snackbar.LENGTH_LONG
+                ).show()
+                lifecycleScope.launch {
+                    dndPreference.storeLocationStatusPreference("None")
+                }
+                dialog.dismiss()
+            }
+            setPositiveButton("Open Settings") { dialog, _ ->
+                requestLocationSettingsActivityResultLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                dialog.dismiss()
+            }
+        }
+            .create()
+        alertDialog.show()
     }
 
     private fun openDNDSettings() {

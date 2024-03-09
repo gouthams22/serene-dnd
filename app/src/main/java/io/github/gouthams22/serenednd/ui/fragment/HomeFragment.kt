@@ -1,18 +1,24 @@
 package io.github.gouthams22.serenednd.ui.fragment
 
+import android.Manifest
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
 import androidx.core.view.allViews
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.asLiveData
@@ -23,6 +29,10 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.google.android.gms.location.Geofence
+import com.google.android.gms.location.GeofencingClient
+import com.google.android.gms.location.GeofencingRequest
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.slider.Slider
 import com.google.android.material.snackbar.Snackbar
@@ -31,9 +41,11 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.FirebaseAuth
 import io.github.gouthams22.serenednd.R
+import io.github.gouthams22.serenednd.model.LocationDND
 import io.github.gouthams22.serenednd.preferences.DNDPreference
+import io.github.gouthams22.serenednd.receiver.DNDStateReceiver
+import io.github.gouthams22.serenednd.receiver.GeofenceReceiver
 import io.github.gouthams22.serenednd.ui.activity.HomeActivity
-import io.github.gouthams22.serenednd.ui.receiver.DNDStateReceiver
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
@@ -49,6 +61,36 @@ class HomeFragment : Fragment() {
     private lateinit var notificationManager: NotificationManager
     private lateinit var dndPreference: DNDPreference
     private lateinit var dndDuration: Array<String>
+
+    private val locations: ArrayList<LocationDND> = arrayListOf(
+        LocationDND(32.998452, -96.7386956, "think_alive"),
+        LocationDND(33.998452, -97.7386956, "think_alone"),
+        LocationDND(35.998452, -99.7386956, "think_aloud"),
+        LocationDND(38.998452, -91.7386956, "think_apart"),
+        LocationDND(32.988627, -96.747877, "cecil_green_hall"),
+        LocationDND(32.993978, -96.749201, "northside")
+    )
+
+    //32.9936409,-96.7486722
+    private val geofenceList: ArrayList<Geofence> = ArrayList()
+    private lateinit var geofencingClient: GeofencingClient
+
+    private val geofencePendingIntent: PendingIntent by lazy {
+        val intent = Intent(view?.context, GeofenceReceiver::class.java)
+        PendingIntent.getBroadcast(
+            view?.context,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+        )
+    }
+
+    private fun getGeofencingRequest(): GeofencingRequest {
+        return GeofencingRequest.Builder().apply {
+            setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+            addGeofences(geofenceList)
+        }.build()
+    }
 
     private val dndType = arrayListOf("Total Silence", "Priority Only", "Calls Only")
     private val dndTypeId =
@@ -97,7 +139,33 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // Initializing rootView
+
+        geofencingClient = LocationServices.getGeofencingClient(view.context)
+        for (location in locations) {
+            geofenceList.add(
+                Geofence.Builder()
+                    .setRequestId(location.name)
+                    .setCircularRegion(location.latitude, location.longitude, 50f)
+                    .setExpirationDuration(600000)
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
+                    .build()
+            )
+        }
+        if (ActivityCompat.checkSelfPermission(
+                view.context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            Log.d("HomeFragment", "onViewCreated: Permission granted")
+            geofencingClient.addGeofences(getGeofencingRequest(), geofencePendingIntent).run {
+                addOnSuccessListener {
+                    Log.d("HomeFragment", "onViewCreated: geofence added Success")
+                }
+                addOnFailureListener {
+                    Log.d("HomeFragment", "onViewCreated: Failure")
+                }
+            }
+        }
 
         dndDuration = resources.getStringArray(R.array.dnd_duration)
 
@@ -238,8 +306,21 @@ class HomeFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-
         context?.unregisterReceiver(dndStateReceiver)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("HomeFragment", "onDestroy: stopping")
+        if (this::geofencingClient.isInitialized && geofencingClient != null)
+            geofencingClient.removeGeofences(geofencePendingIntent).run {
+                addOnSuccessListener {
+                    Log.d("HomeFragment", "onDestroy: pendingIntent destroy success")
+                }
+                addOnFailureListener {
+                    Log.d("HomeFragment", "onDestroy: pendingIntent destroy failure")
+                }
+            }
     }
 
     private fun updateInputAccessibility(view: View, isEnabled: Boolean) {
@@ -283,7 +364,10 @@ class HomeFragment : Fragment() {
                 WorkManager.getInstance(view.context).enqueue(timeWorkRequest)
             }
             // Location
-            dndDuration[2] -> notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE)
+            dndDuration[2] -> {
+                notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE)
+
+            }
         }
     }
 
