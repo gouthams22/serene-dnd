@@ -10,12 +10,12 @@ plugins {
 
 android {
     namespace 'io.github.gouthams22.serenednd'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "io.github.gouthams22.serenednd"
         minSdk 26
-        targetSdk 33
+        targetSdk 34
         versionCode 6
         versionName "1.0.0"
 
@@ -54,24 +54,24 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     // Firebase BoM
-    implementation platform('com.google.firebase:firebase-bom:31.0.2')
+    implementation platform('com.google.firebase:firebase-bom:32.7.4')
     // When using the BoM, don't specify versions in Firebase dependencies
     implementation 'com.google.firebase:firebase-analytics-ktx'
     // Firebase Authentication library
     implementation 'com.google.firebase:firebase-auth-ktx'
     // Dependency for the Google Play services library and its version
-    implementation 'com.google.android.gms:play-services-auth:20.6.0'
+    implementation 'com.google.android.gms:play-services-auth:21.0.0'
     // Data Store Preferences
     implementation 'androidx.datastore:datastore-preferences:1.0.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.7.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
     // Work Manager for Time based DND
-    implementation 'androidx.work:work-runtime-ktx:2.8.1'
+    implementation 'androidx.work:work-runtime-ktx:2.9.0'
     //Androidx Preferences
     implementation 'androidx.preference:preference-ktx:1.2.1'
     //Coil image loader
