@@ -137,7 +137,7 @@ class LoginFragment : Fragment() {
             // Locking email field and button to not be able to interact
             disableDialogInput(passwordAlertDialog)
 
-            if (isEmailValid(forgotEmailEditText?.text?.trim().toString())) {
+            if (isValidEmail(forgotEmailEditText?.text?.trim().toString())) {
                 firebaseAuth.sendPasswordResetEmail(forgotEmailEditText?.text?.trim().toString())
                     .addOnCompleteListener { task ->
 
@@ -313,7 +313,7 @@ class LoginFragment : Fragment() {
         if (email.isEmpty()) {
             emailField.error = "Empty field"
             return false
-        } else if (!isEmailValid(email)) {
+        } else if (!isValidEmail(email)) {
             emailField.error = "Incorrect email format"
             return false
         }
@@ -333,11 +333,11 @@ class LoginFragment : Fragment() {
     }
 
     /**
-     * [isEmailValid] is used to validate Email format
+     * [isValidEmail] is used to validate Email format
      * @param email Email address to be validated
      * @return Boolean value of validation of Email format
      */
-    private fun isEmailValid(email: String): Boolean {
+    private fun isValidEmail(email: String): Boolean {
         // Using Regular Expressions
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
